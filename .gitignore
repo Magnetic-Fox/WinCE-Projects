@@ -1,0 +1,12 @@
+#Compiled:
+
+*.exe
+*.compiled
+*.o
+*.or
+*.res
+*.ppu
+
+#'lib' folders:
+
+JetDirect_SendMessage_CE/lib/*
