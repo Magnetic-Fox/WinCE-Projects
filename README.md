@@ -11,7 +11,8 @@ Some really simple projects done for Windows CE-based devices using Lazarus (Fre
 Here is a list of projects pushed to this repository.
 
 ```
-JetDirect Send Message
+JetDirect Send Message  [07-09.04.2021]
+Noter Client v1.0       [05-11.11.2021]
 ```
 
 ## Disclaimer
