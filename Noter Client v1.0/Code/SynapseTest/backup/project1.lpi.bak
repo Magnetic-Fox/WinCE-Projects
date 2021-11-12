@@ -62,8 +62,8 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
-      <TargetCPU Value="i386"/>
-      <TargetOS Value="win32"/>
+      <TargetCPU Value="arm"/>
+      <TargetOS Value="wince"/>
     </CodeGeneration>
     <Linking>
       <Options>
