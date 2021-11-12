@@ -7,7 +7,11 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, httpsend, synacode, fpjson, jsonparser, Dos, Windows,
-  synacrypt, IniFiles;
+  synacrypt, IniFiles
+  {$IFDEF LCLWinCE}
+  , sipapi
+  {$ENDIF}
+  ;
 
 type
 
@@ -156,7 +160,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure ListBox1Click(Sender: TObject);
+    procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Memo1Change(Sender: TObject);
     procedure Page10BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
@@ -164,6 +168,8 @@ type
     procedure Page11BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page11Resize(Sender: TObject);
+    procedure Page1BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
     procedure Page1Resize(Sender: TObject);
     procedure Page2BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
@@ -171,7 +177,11 @@ type
     procedure Page3BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page3Resize(Sender: TObject);
+    procedure Page4BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
     procedure Page4Resize(Sender: TObject);
+    procedure Page5BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
     procedure Page5Resize(Sender: TObject);
     procedure Page6BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
@@ -257,16 +267,42 @@ var Form1: TForm1;
     userAgent, server, share, username, password, iniFile: utf8string;
     ini: TIniFile;
     settingsLoaded, newSize, noteChanged, userChanged, serverChanged, newIDSet: boolean;
-    selectedNoteIndex, newID: integer;
+    selectedNoteIndex, newID, FormSize: integer;
     tempNote: note;
     tempUser: user;
     tempServer: serverInfo;
+    {$IFDEF LCLWinCE}
+    PrevWndProc: WNDPROC;
+    {$ENDIF}
 
 implementation
 
 {$R *.lfm}
 
 { TForm1 }
+
+{$IFDEF LCLWinCE}
+Function wndCallBack(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam): LRESULT; stdcall;
+var x: SIPInfo;
+begin
+     if uMsg=WM_SETTINGCHANGE then
+     begin
+          If wParam=SPI_SETSIPINFO then
+          begin
+               system.FillChar(x,sizeof(x),0);
+               x.cbSize:=sizeof(x);
+               If SipGetInfo(Addr(x)) then
+               begin
+                    If ((x.fdwFlags and 1)=1) then
+                       Form1.Height:=FormSize-(x.rcSipRect.Bottom-x.rcSipRect.Top)
+                    else
+                       Form1.Height:=FormSize;
+               end;
+          end;
+     end;
+     Result:=CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam);
+end;
+{$ENDIF}
 
 Function Question(text: utf8string): boolean;
 var tx, title: PChar;
@@ -308,9 +344,10 @@ begin
 end;
 
 Function generateKey(server: utf8string): utf8string;
-var temp: utf8string;
-    x, y: integer;
+var temp, temp2: utf8string;
+    x {, y}    : integer;
 begin
+     {
      x:=length(server);
      y:=1;
      temp:='';
@@ -324,6 +361,15 @@ begin
           Result:=temp;
      end
      else Result:='';
+     }
+     temp:=SHA1(server+server+server);
+     temp2:='';
+     For x:=1 to 10 do
+     begin
+          temp2:=temp2+Chr(Ord(temp[x])+Ord(temp[x+10]));
+     end;
+     temp2:=temp2+temp[11]+temp[20];
+     Result:=EncodeBase64(temp2);
 end;
 
 Function Post(action, username, password: utf8string; subject: utf8string = ''; entry: utf8string = ''; newPassword: utf8string = ''; noteID: integer = 0): utf8string;
@@ -528,6 +574,10 @@ procedure TForm1.FormCreate(Sender: TObject);
 var version: word;
     aes:     TSynaAes;
 begin
+     FormSize:=Form1.Height;
+     {$IFDEF LCLWinCE}
+     PrevWndProc:=Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
+     {$ENDIF}
      version:=DosVersion;
      userAgent:='Noter Client/1.0 (Windows CE OS '+IntToStr(Lo(version))+'.'+IntToStr(Hi(version))+')';
      settingsLoaded:=false;
@@ -631,6 +681,7 @@ begin
                     Label25.Enabled:=false;
                     Label25.Visible:=false;
                     CheckBox2.Checked:=true;
+                    Button12.Caption:='Dodaj';
                     selectedNoteIndex:=-1;
                     newSize:=false;
                     Notebook1.Height:=Form1.Height;
@@ -668,6 +719,7 @@ begin
           Memo1.Clear;
           noteChanged:=false;
           CheckBox2.Checked:=true;
+          Button12.Caption:='Dodaj';
           tempNote.id:=0;
           tempNote.added:=0;
           tempNote.lastMod:=0;
@@ -686,6 +738,7 @@ var CanClose: boolean;
     data, tempServer, tempShare: utf8string;
     res:      integer;
     atta:     att;
+    aes:      TSynaAes;
 begin
      CanClose:=true;
      If noteChanged or userChanged then
@@ -713,6 +766,9 @@ begin
                     Information(whichCode(serverChangedSuccessful));
                     ini.WriteString('server','address',server);
                     ini.WriteString('server','share',share);
+                    aes:=TSynaAes.Create(generateKey(server));
+                    ini.WriteString('user','password',EncodeBase64(aes.EncryptCFBblock(password)));
+                    aes.Free;
                     Edit3.Text:='';
                     Edit4.Text:='';
                     Edit5.Text:='';
@@ -730,6 +786,7 @@ begin
                     userChanged:=false;
                     noteChanged:=false;
                     CheckBox2.Checked:=true;
+                    Button12.Caption:='Dodaj';
                     selectedNoteIndex:=-1;
                     settingsLoaded:=true;
                     Notebook1.PageIndex:=1;
@@ -862,6 +919,7 @@ begin
                selectedNoteIndex:=-1;
                ListBox1.ItemIndex:=selectedNoteIndex;
                CheckBox2.Checked:=true;
+               Button12.Caption:='Dodaj';
                Notebook1.PageIndex:=2;
           end
           else if res<OK then
@@ -934,6 +992,7 @@ begin
                Label25.Enabled:=false;
                Label25.Visible:=false;
                CheckBox2.Checked:=true;
+               Button12.Caption:='Dodaj';
                selectedNoteIndex:=-1;
                newSize:=false;
                Notebook1.Height:=Form1.Height;
@@ -1106,12 +1165,15 @@ begin
      else Notebook1.Height:=Form1.Height;
 end;
 
-procedure TForm1.ListBox1Click(Sender: TObject);
+procedure TForm1.ListBox1SelectionChange(Sender: TObject; User: boolean);
 var load: boolean;
     res:  integer;
     atta: att;
     data: utf8string;
 begin
+     If User then
+     begin
+
      load:=false;
      If ListBox1.ItemIndex>-1 then
      begin
@@ -1158,6 +1220,8 @@ begin
                Error(whichCode(res));
           end;
      end;
+
+     end;
 end;
 
 procedure TForm1.Memo1Change(Sender: TObject);
@@ -1168,6 +1232,7 @@ end;
 procedure TForm1.Page10BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
+     Form1.Constraints.MinHeight:=256;
      Edit10.Text:='';
 end;
 
@@ -1180,6 +1245,7 @@ end;
 procedure TForm1.Page11BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
+     Form1.Constraints.MinHeight:=160;
      Edit11.Text:=server;
      Edit12.Text:=share;
      serverChanged:=false;
@@ -1191,6 +1257,12 @@ begin
      Edit12.Width:=Page11.Width-16;
 end;
 
+procedure TForm1.Page1BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+begin
+     Form1.Constraints.MinHeight:=0;
+end;
+
 procedure TForm1.Page1Resize(Sender: TObject);
 begin
      Label1.Width:=Page1.Width-16;
@@ -1198,9 +1270,9 @@ begin
      Edit2.Width:=Page1.Width-16;
      Edit3.Width:=Page1.Width-16;
      Edit4.Width:=Page1.Width-16;
-     Button1.Top:=Page1.Height-36;
+     { Button1.Top:=Page1.Height-36; }
      Button1.Left:=Page1.Width-104;
-     CheckBox1.Top:=Page1.Height-32;
+     { CheckBox1.Top:=Page1.Height-32; }
 end;
 
 procedure TForm1.Page2BeforeShow(ASender: TObject; ANewPage: TPage;
@@ -1210,6 +1282,7 @@ var atta: att;
     data: utf8string;
     aes:  TSynaAes;
 begin
+     Form1.Constraints.MinHeight:=144;
      if CheckBox1.Checked then data:=Post('register',username,password)
         else data:=Post('info',username,password);
      res:=getAnswerInfo(data,atta);
@@ -1267,6 +1340,7 @@ var data:       utf8string;
     res, x:     integer;
     attachment: att;
 begin
+     Form1.Constraints.MinHeight:=0;
      newID:=0;
      newIDSet:=false;
      if not newSize then
@@ -1318,12 +1392,24 @@ begin
      ListBox1.Height:=Page3.Height-16;
 end;
 
+procedure TForm1.Page4BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+begin
+     Form1.Constraints.MinHeight:=128;
+end;
+
 procedure TForm1.Page4Resize(Sender: TObject);
 begin
      Edit5.Width:=Page4.Width-16;
      Button5.Top:=Page4.Height-36;
      Button4.Top:=Page4.Height-36;
      Button4.Left:=Page4.Width-104;
+end;
+
+procedure TForm1.Page5BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+begin
+     Form1.Constraints.MinHeight:=0;
 end;
 
 procedure TForm1.Page5Resize(Sender: TObject);
@@ -1339,6 +1425,7 @@ end;
 procedure TForm1.Page6BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
+     Form1.Constraints.MinHeight:=200;
      If tempNote.id=0 then
      begin
           Label16.Caption:='-';
@@ -1374,6 +1461,7 @@ var data: utf8string;
     res:  integer;
     atta: att;
 begin
+     Form1.Constraints.MinHeight:=232;
      data:=Post('info',username,password);
      res:=getAnswerInfo(data,atta);
      if res=userInfoGetSuccessful then
@@ -1413,6 +1501,7 @@ procedure TForm1.Page8BeforeShow(ASender: TObject; ANewPage: TPage;
 var data: utf8string;
     atta: att;
 begin
+     Form1.Constraints.MinHeight:=168;
      data:=Post('info',username,password);
      getAnswerInfo(data,atta);
      if getServer(data,tempServer) then
@@ -1439,6 +1528,7 @@ end;
 procedure TForm1.Page9BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
+     Form1.Constraints.MinHeight:=208;
      Edit7.Text:='';
      Edit8.Text:='';
      Edit9.Text:='';

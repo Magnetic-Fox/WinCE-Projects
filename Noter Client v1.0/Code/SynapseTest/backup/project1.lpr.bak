@@ -8,13 +8,17 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, Unit1
+  {$IFDEF LCLWinCE}
+  , WinCEInt
+  {$ENDIF}
   { you can add units after this };
 
 {$R *.res}
 
 begin
      RequireDerivedFormResource := True;
-     Application.Title:='Noter Client 1.0';
+     WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
+     Application.Title:='Noter Client v1.0';
      Application.Initialize;
      Application.CreateForm(TForm1, Form1);
      Application.Run;
