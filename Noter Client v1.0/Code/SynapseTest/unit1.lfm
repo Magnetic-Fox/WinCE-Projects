@@ -7,6 +7,7 @@ object Form1: TForm1
   ClientHeight = 268
   ClientWidth = 240
   Color = clWhite
+  Constraints.MinHeight = 264
   Font.CharSet = 4
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -222,6 +223,19 @@ object Form1: TForm1
         OnSelectionChange = ListBox1SelectionChange
         TabOrder = 0
       end
+      object Label64: TLabel
+        Left = 120
+        Height = 13
+        Top = 0
+        Width = 120
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '0'
+        Font.CharSet = 4
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
     end
     object Page4: TPage
       OnBeforeShow = Page4BeforeShow
@@ -301,6 +315,8 @@ object Form1: TForm1
         ParentColor = False
         ParentFont = False
         OnClick = Label58Click
+        OnMouseDown = Label58MouseDown
+        OnMouseUp = Label58MouseUp
         OnMouseEnter = Label58MouseEnter
         OnMouseLeave = Label58MouseLeave
       end
@@ -495,12 +511,21 @@ object Form1: TForm1
         TabOrder = 0
       end
       object Button22: TButton
-        Left = 80
+        Left = 160
         Height = 16
         Top = 168
         Width = 80
         Caption = 'Zamknij'
         OnClick = Button22Click
+        TabOrder = 2
+      end
+      object Button26: TButton
+        Left = 80
+        Height = 16
+        Top = 168
+        Width = 80
+        Caption = 'Zablokuj'
+        OnClick = Button26Click
         TabOrder = 1
       end
     end
@@ -688,7 +713,7 @@ object Form1: TForm1
       object Label40: TLabel
         Left = 0
         Height = 13
-        Top = 96
+        Top = 128
         Width = 92
         Caption = 'Wersja serwera:'
         Font.CharSet = 4
@@ -699,7 +724,7 @@ object Form1: TForm1
       object Label41: TLabel
         Left = 8
         Height = 13
-        Top = 112
+        Top = 144
         Width = 224
         AutoSize = False
         Caption = '?'
@@ -709,7 +734,7 @@ object Form1: TForm1
       object Button16: TButton
         Left = 0
         Height = 16
-        Top = 136
+        Top = 168
         Width = 80
         Caption = 'Zmień serwer'
         OnClick = Button16Click
@@ -751,6 +776,27 @@ object Form1: TForm1
         Left = 8
         Height = 13
         Top = 48
+        Width = 224
+        AutoSize = False
+        Caption = '?'
+        ParentColor = False
+        WordWrap = True
+      end
+      object Label65: TLabel
+        Left = 0
+        Height = 13
+        Top = 96
+        Width = 138
+        Caption = 'Strefa czasowa serwera:'
+        Font.CharSet = 4
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label66: TLabel
+        Left = 8
+        Height = 13
+        Top = 112
         Width = 224
         AutoSize = False
         Caption = '?'
@@ -1174,7 +1220,7 @@ object Form1: TForm1
   end
   object ImageList1: TImageList
     left = 192
-    top = 8
+    top = 24
     Bitmap = {
       4C69050000001000000010000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF

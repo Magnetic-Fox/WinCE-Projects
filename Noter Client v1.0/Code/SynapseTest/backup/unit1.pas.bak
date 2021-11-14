@@ -36,6 +36,7 @@ type
     Button23: TButton;
     Button24: TButton;
     Button25: TButton;
+    Button26: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
@@ -119,6 +120,9 @@ type
     Label61: TLabel;
     Label62: TLabel;
     Label63: TLabel;
+    Label64: TLabel;
+    Label65: TLabel;
+    Label66: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
@@ -155,6 +159,7 @@ type
     procedure Button23Click(Sender: TObject);
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
+    procedure Button26Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
@@ -176,8 +181,12 @@ type
     procedure FormResize(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Label58Click(Sender: TObject);
+    procedure Label58MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Label58MouseEnter(Sender: TObject);
     procedure Label58MouseLeave(Sender: TObject);
+    procedure Label58MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Memo1Change(Sender: TObject);
     procedure Page10BeforeShow(ASender: TObject; ANewPage: TPage;
@@ -237,6 +246,7 @@ note = record
      id:             integer;
      subject, entry: utf8string;
      added, lastMod: TDateTime;
+     locked:         boolean;
      UA, lastUA:     utf8string;
 end;
 
@@ -250,7 +260,7 @@ user = record
 end;
 
 serverInfo = record
-           name, version: utf8string;
+           name, timezone, version: utf8string;
 end;
 
 { Dodatkowe typy }
@@ -263,7 +273,11 @@ const connecting=              10240;
 
 { Kody odpowiedzi }
 const getError=                -1024;
+const serviceDisabled=         -768;
 const serverError=             -512;
+const noteAlreadyUnlocked=     -14;
+const noteAlreadyLocked=       -13;
+const noteLocked=              -12;
 const userRemoveError=         -11;
 const userNotExist=            -10;
 const noteNotExist=            -9;
@@ -285,6 +299,8 @@ const noteCreateSuccessful=    6;
 const noteUpdateSuccessful=    7;
 const noteDeleteSuccessful=    8;
 const userInfoGetSuccessful=   9;
+const noteLockSuccessful=      10;
+const noteUnlockSuccessful=    11;
 const serverChangedSuccessful= 1024;
 
 { Zmienne }
@@ -447,44 +463,49 @@ end;
 Function whichCode(code: integer): utf8string;
 begin
      Case code of
-          -1024:Result:='Błędna odpowiedź serwera.';
+          -1024:Result:='Błędna odpowiedź serwera';
 
-          -768: Result:='Serwer tymczasowo wyłączony.';
-          -512: Result:='Wewnętrzny błąd serwera.';
+          -768: Result:='Serwer tymczasowo wyłączony';
+          -512: Result:='Wewnętrzny błąd serwera';
 
-          -11:  Result:='Błąd usuwania użytkownika.';
-          -10:  Result:='Użytkownik nie istnieje.';
-          -9:   Result:='Notatka nie istnieje.';
-          -8:   Result:='Brak wymaganych informacji.';
-          -7:   Result:='Użytkownik jest zablokowany.';
-          -6:   Result:='Nieprawidłowe dane logowania.';
-          -5:   Result:='Nieznane polecenie.';
-          -4:   Result:='Brak danych logowania.';
-          -3:   Result:='Wybrana nazwa użytkownika jest zajęta.';
-          -2:   Result:='Brak użytecznych informacji w żądaniu.';
-          -1:   Result:='Nieprawidłowy typ żądania.';
+          -14:  Result:='Notatka już odblokowana';
+          -13:  Result:='Notatka już zablokowana';
+          -12:  Result:='Notatka zablokowana';
+          -11:  Result:='Błąd usuwania użytkownika';
+          -10:  Result:='Użytkownik nie istnieje';
+          -9:   Result:='Notatka nie istnieje';
+          -8:   Result:='Brak wymaganych informacji';
+          -7:   Result:='Użytkownik jest zablokowany';
+          -6:   Result:='Nieprawidłowe dane logowania';
+          -5:   Result:='Nieznane polecenie';
+          -4:   Result:='Brak danych logowania';
+          -3:   Result:='Wybrana nazwa użytkownika jest zajęta';
+          -2:   Result:='Brak użytecznych informacji w żądaniu';
+          -1:   Result:='Nieprawidłowy typ żądania';
 
           0:    Result:='OK';
 
-          1:    Result:='Użytkownik poprawnie utworzony.';
-          2:    Result:='Użytkownik poprawnie zaktualizowany.';
-          3:    Result:='Użytkownik poprawnie usunięty.';
-          4:    Result:='Poprawnie odebrano listę notatek.';
-          5:    Result:='Poprawnie odebrano notatkę.';
-          6:    Result:='Poprawnie utworzono notatkę.';
-          7:    Result:='Poprawnie zaktualizowano notatkę.';
-          8:    Result:='Poprawnie usunięto notatkę.';
-          9:    Result:='Poprawnie odebrano informacje o użytkowniku.';
+          1:    Result:='Użytkownik poprawnie utworzony';
+          2:    Result:='Użytkownik poprawnie zaktualizowany';
+          3:    Result:='Użytkownik poprawnie usunięty';
+          4:    Result:='Poprawnie odebrano listę notatek';
+          5:    Result:='Poprawnie odebrano notatkę';
+          6:    Result:='Poprawnie utworzono notatkę';
+          7:    Result:='Poprawnie zaktualizowano notatkę';
+          8:    Result:='Poprawnie usunięto notatkę';
+          9:    Result:='Poprawnie odebrano informacje o użytkowniku';
+          10:   Result:='Notatka zablokowana pomyślnie';
+          11:   Result:='Notatka odblokowana pomyślnie';
 
-          1024: Result:='Serwer został zmieniony.';
+          1024: Result:='Serwer został zmieniony';
      else
-         Result:='?';
+         Result:='Nieznany kod odpowiedzi serwera';
      end;
 end;
 
 Function getAnswerInfo(input: utf8string; var attachment: att): integer;
 var jData: TJSONData;
-    count, x: integer;
+    count, x, code: integer;
     atta:   array of utf8string;
 begin
      Try
@@ -498,7 +519,9 @@ begin
              atta[x]:=jData.FindPath('answer_info').FindPath('attachment['+IntToStr(x)+']').AsString;
         end;
         attachment:=atta;
-        Result:=jData.FindPath('answer_info').FindPath('code').AsInteger;
+        code:=jData.FindPath('answer_info').FindPath('code').AsInteger;
+        jData.Free;
+        Result:=code;
      Except
         On E: Exception do
         begin
@@ -519,6 +542,7 @@ begin
         output.UA:=jData.FindPath('answer').FindPath('user').FindPath('user_agent').AsString;
         output.lastChanged:=StrToDateTime(jData.FindPath('answer').FindPath('user').FindPath('last_changed').AsString);
         output.lastUA:=jData.FindPath('answer').FindPath('user').FindPath('last_user_agent').AsString;
+        jData.Free;
      Except
         On E: Exception do
         begin
@@ -548,6 +572,7 @@ begin
              list[x]:=obj;
         end;
         elements:=list;
+        jData.Free;
      Except
         On E: Exception do
         begin
@@ -568,8 +593,10 @@ begin
         output.entry:=jData.FindPath('answer').FindPath('note').FindPath('entry').AsString;
         output.added:=StrToDateTime(jData.FindPath('answer').FindPath('note').FindPath('date_added').AsString);
         output.lastMod:=StrToDateTime(jData.FindPath('answer').FindPath('note').FindPath('last_modified').AsString);
+        output.locked:=jData.FindPath('answer').FindPath('note').FindPath('locked').AsBoolean;
         output.UA:=jData.FindPath('answer').FindPath('note').FindPath('user_agent').AsString;
         output.lastUA:=jData.FindPath('answer').FindPath('note').FindPath('last_user_agent').AsString;
+        jData.Free;
      Except
         On E: Exception do
         begin
@@ -586,7 +613,9 @@ begin
         jData:=GetJSON(input);
         if jData=nil then raise Exception.Create('No usable JSON data.');
         output.name:=jData.FindPath('server').FindPath('name').AsString;
+        output.timezone:=jData.FindPath('server').FindPath('timezone').AsString;
         output.version:=jData.FindPath('server').FindPath('version').AsString;
+        jData.Free;
      Except
         On E: Exception do
         begin
@@ -603,6 +632,7 @@ begin
         jData:=GetJSON(input);
         if jData=nil then raise Exception.Create('No usable JSON data.');
         newID:=jData.FindPath('answer').FindPath('new_id').AsInteger;
+        jData.Free;
      Except
         On E: Exception do
         begin
@@ -693,9 +723,9 @@ var data: utf8string;
 begin
      If Length(Edit10.Text)>0 then
      begin
-          If Question('Czy na pewno chcesz usunąć swoje konto? Ten proces jest nieodwracalny!') then
+          If Question('Czy na pewno chcesz usunąć swoje konto?'#13#10'Ten proces jest nieodwracalny!') then
           begin
-               data:=Post('remove',username,password);
+               data:=Post('remove',username,Edit10.Text);
                res:=GetAnswerInfo(data,atta);
                if res=userRemoved then
                begin
@@ -710,6 +740,7 @@ begin
                     tempNote.id:=0;
                     tempNote.added:=0;
                     tempNote.lastMod:=0;
+                    tempNote.locked:=false;
                     tempNote.UA:='';
                     tempNote.lastUA:='';
                     tempNote.subject:='';
@@ -780,6 +811,7 @@ begin
           tempNote.id:=0;
           tempNote.added:=0;
           tempNote.lastMod:=0;
+          tempNote.locked:=false;
           tempNote.UA:='';
           tempNote.lastUA:='';
           tempNote.subject:='';
@@ -836,6 +868,7 @@ begin
                     tempNote.id:=0;
                     tempNote.added:=0;
                     tempNote.lastMod:=0;
+                    tempNote.locked:=false;
                     tempNote.UA:='';
                     tempNote.lastUA:='';
                     tempNote.subject:='';
@@ -866,6 +899,45 @@ end;
 procedure TForm1.Button25Click(Sender: TObject);
 begin
      Notebook1.PageIndex:=3;
+end;
+
+procedure TForm1.Button26Click(Sender: TObject);
+var data: utf8string;
+    res, noteID:  integer;
+    atta: att;
+begin
+     If newIDSet then noteID:=newID
+        else noteID:=elements[selectedNoteIndex].id;
+     If tempNote.locked then
+     begin
+          data:=Post('unlock',username,password,'','','',noteID);
+          res:=getAnswerInfo(data,atta);
+          If res=noteUnlockSuccessful then
+          begin
+               tempNote.locked:=false;
+               Button26.Caption:='Zablokuj';
+               Button13.Enabled:=true;
+          end
+          else if res<OK then
+          begin
+               Error(whichCode(res));
+          end;
+     end
+     else
+     begin
+          data:=Post('lock',username,password,'','','',noteID);
+          res:=getAnswerInfo(data,atta);
+          If res=noteLockSuccessful then
+          begin
+               tempNote.locked:=true;
+               Button26.Caption:='Odblokuj';
+               Button13.Enabled:=false;
+          end
+          else if res<OK then
+          begin
+               Error(whichCode(res));
+          end;
+     end;
 end;
 
 procedure TForm1.Button10Click(Sender: TObject);
@@ -957,7 +1029,7 @@ end;
 
 procedure TForm1.Button13Click(Sender: TObject);
 var data: utf8string;
-    res:  integer;
+    res, noteID:  integer;
     atta: att;
     CanClose: boolean;
 begin
@@ -968,13 +1040,16 @@ begin
      end;
      If ((CanClose) and (Question('Czy na pewno chcesz usunąć tą notatkę?'))) then
      begin
-          data:=Post('delete',username,password,'','','',elements[selectedNoteIndex].id);
+          If newIDSet then noteID:=newID
+             else noteID:=elements[selectedNoteIndex].id;
+          data:=Post('delete',username,password,'','','',noteID);
           res:=getAnswerInfo(data,atta);
           if res=noteDeleteSuccessful then
           begin
                tempNote.id:=0;
                tempNote.added:=0;
                tempNote.lastMod:=0;
+               tempNote.locked:=false;
                tempNote.UA:='';
                tempNote.lastUA:='';
                tempNote.subject:='';
@@ -1034,6 +1109,7 @@ begin
                tempNote.id:=0;
                tempNote.added:=0;
                tempNote.lastMod:=0;
+               tempNote.locked:=false;
                tempNote.UA:='';
                tempNote.lastUA:='';
                tempNote.subject:='';
@@ -1248,12 +1324,24 @@ begin
      Notebook1.PageIndex:=11;
 end;
 
+procedure TForm1.Label58MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+     Label58.Font.Style:=[fsBold, fsUnderline];
+end;
+
 procedure TForm1.Label58MouseEnter(Sender: TObject);
 begin
      Label58.Font.Style:=[fsBold, fsUnderline];
 end;
 
 procedure TForm1.Label58MouseLeave(Sender: TObject);
+begin
+     Label58.Font.Style:=[fsBold];
+end;
+
+procedure TForm1.Label58MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 begin
      Label58.Font.Style:=[fsBold];
 end;
@@ -1367,7 +1455,7 @@ end;
 procedure TForm1.Page1BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
-     Form1.Constraints.MinHeight:=0;
+     Form1.Constraints.MinHeight:=264;
 end;
 
 procedure TForm1.Page1Resize(Sender: TObject);
@@ -1421,7 +1509,7 @@ begin
      else
      begin
           Button3.Enabled:=false;
-          Label10.Caption:=whichCode(res);
+          Label10.Caption:=whichCode(res)+'.';
           if CheckBox1.Checked then Label2.Caption:='Nie udało się zarejestrować. :('
              else Label2.Caption:='Nie udało się zalogować. :(';
           if(settingsLoaded) then settingsLoaded:=false;
@@ -1445,7 +1533,7 @@ var data:       utf8string;
     res, x:     integer;
     attachment: att;
 begin
-     Form1.Constraints.MinHeight:=0;
+     Form1.Constraints.MinHeight:=64;
      newID:=0;
      newIDSet:=false;
      if not newSize then
@@ -1466,6 +1554,7 @@ begin
           Button11.Visible:=true;
           Label25.Enabled:=true;
           Label25.Visible:=true;
+          Form1.FormResize(ASender);
      end;
      data:=Post('list',username,password);
      res:=getAnswerInfo(data,attachment);
@@ -1478,6 +1567,7 @@ begin
                begin
                     ListBox1.AddItem(elements[x].name,nil);
                end;
+               Label64.Caption:=IntToStr(length(elements));
                ListBox1.ItemIndex:=selectedNoteIndex;
           end
           else
@@ -1495,6 +1585,7 @@ procedure TForm1.Page3Resize(Sender: TObject);
 begin
      ListBox1.Width:=Page3.Width;
      ListBox1.Height:=Page3.Height-16;
+     Label64.Left:=Page3.Width-120;
 end;
 
 procedure TForm1.Page4BeforeShow(ASender: TObject; ANewPage: TPage;
@@ -1514,7 +1605,7 @@ end;
 procedure TForm1.Page5BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
-     Form1.Constraints.MinHeight:=0;
+     Form1.Constraints.MinHeight:=128;
 end;
 
 procedure TForm1.Page5Resize(Sender: TObject);
@@ -1537,12 +1628,17 @@ begin
      begin
           Label16.Caption:='-';
           Button13.Enabled:=false;
+          Button26.Enabled:=false;
      end
      else
      begin
           Label16.Caption:=IntToStr(tempNote.id);
-          Button13.Enabled:=true;
+          If not tempNote.locked then Button13.Enabled:=true
+             else Button13.Enabled:=false;
+          Button26.Enabled:=true;
      end;
+     If tempNote.locked then Button26.Caption:='Odblokuj'
+        else Button26.Caption:='Zablokuj';
      If tempNote.added=0 then Label18.Caption:='-'
         else Label18.Caption:=DateTimeToStr(tempNote.added);
      If tempNote.lastMod=0 then Label20.Caption:='-'
@@ -1608,7 +1704,7 @@ procedure TForm1.Page8BeforeShow(ASender: TObject; ANewPage: TPage;
 var data: utf8string;
     atta: att;
 begin
-     Form1.Constraints.MinHeight:=168;
+     Form1.Constraints.MinHeight:=200;
      data:=Post('info',username,password);
      getAnswerInfo(data,atta);
      if getServer(data,tempServer) then
@@ -1616,6 +1712,7 @@ begin
           Label53.Caption:=server;
           Label55.Caption:=share;
           Label39.Caption:=tempServer.name;
+          Label66.Caption:=tempServer.timezone;
           Label41.Caption:=tempServer.version;
      end
      else
@@ -1629,6 +1726,7 @@ begin
      Label53.Width:=Page8.Width-16;
      Label55.Width:=Page8.Width-16;
      Label39.Width:=Page8.Width-16;
+     Label66.Width:=Page8.Width-16;
      Label41.Width:=Page8.Width-16;
 end;
 
