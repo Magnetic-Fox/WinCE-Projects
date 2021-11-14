@@ -449,6 +449,7 @@ begin
      Case code of
           -1024:Result:='Błędna odpowiedź serwera.';
 
+          -768: Result:='Serwer tymczasowo wyłączony.';
           -512: Result:='Wewnętrzny błąd serwera.';
 
           -11:  Result:='Błąd usuwania użytkownika.';
@@ -474,6 +475,7 @@ begin
           7:    Result:='Poprawnie zaktualizowano notatkę.';
           8:    Result:='Poprawnie usunięto notatkę.';
           9:    Result:='Poprawnie odebrano informacje o użytkowniku.';
+
           1024: Result:='Serwer został zmieniony.';
      else
          Result:='?';
@@ -883,7 +885,7 @@ var data: utf8string;
 begin
      If ((Length(Edit6.Text)>0) and (Length(Memo1.Lines.GetText)>0)) then
      begin
-          changeIncoAndLastCode(connecting);
+          changeIconAndLastCode(connecting);
           If CheckBox2.Checked then
           begin
                data:=Post('add',username,password,Edit6.Text,Memo1.Lines.Text);

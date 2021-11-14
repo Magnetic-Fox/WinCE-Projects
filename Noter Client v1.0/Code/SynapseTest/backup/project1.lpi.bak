@@ -9,6 +9,7 @@
       <Title Value="Noter Client v1.0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -62,8 +63,8 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
-      <TargetCPU Value="arm"/>
-      <TargetOS Value="wince"/>
+      <TargetCPU Value="i386"/>
+      <TargetOS Value="win32"/>
     </CodeGeneration>
     <Linking>
       <Options>

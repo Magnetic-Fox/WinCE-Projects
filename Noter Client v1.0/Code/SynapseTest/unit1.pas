@@ -447,33 +447,35 @@ end;
 Function whichCode(code: integer): utf8string;
 begin
      Case code of
-          -1024:Result:='Błędna odpowiedź serwera.';
+          -1024:Result:='Błędna odpowiedź serwera';
 
-          -512: Result:='Wewnętrzny błąd serwera.';
+          -768: Result:='Serwer tymczasowo wyłączony';
+          -512: Result:='Wewnętrzny błąd serwera';
 
-          -11:  Result:='Błąd usuwania użytkownika.';
-          -10:  Result:='Użytkownik nie istnieje.';
-          -9:   Result:='Notatka nie istnieje.';
-          -8:   Result:='Brak wymaganych informacji.';
-          -7:   Result:='Użytkownik jest zablokowany.';
-          -6:   Result:='Nieprawidłowe dane logowania.';
-          -5:   Result:='Nieznane polecenie.';
-          -4:   Result:='Brak danych logowania.';
-          -3:   Result:='Wybrana nazwa użytkownika jest zajęta.';
-          -2:   Result:='Brak użytecznych informacji w żądaniu.';
-          -1:   Result:='Nieprawidłowy typ żądania.';
+          -11:  Result:='Błąd usuwania użytkownika';
+          -10:  Result:='Użytkownik nie istnieje';
+          -9:   Result:='Notatka nie istnieje';
+          -8:   Result:='Brak wymaganych informacji';
+          -7:   Result:='Użytkownik jest zablokowany';
+          -6:   Result:='Nieprawidłowe dane logowania';
+          -5:   Result:='Nieznane polecenie';
+          -4:   Result:='Brak danych logowania';
+          -3:   Result:='Wybrana nazwa użytkownika jest zajęta';
+          -2:   Result:='Brak użytecznych informacji w żądaniu';
+          -1:   Result:='Nieprawidłowy typ żądania';
 
           0:    Result:='OK';
 
-          1:    Result:='Użytkownik poprawnie utworzony.';
-          2:    Result:='Użytkownik poprawnie zaktualizowany.';
-          3:    Result:='Użytkownik poprawnie usunięty.';
-          4:    Result:='Poprawnie odebrano listę notatek.';
-          5:    Result:='Poprawnie odebrano notatkę.';
-          6:    Result:='Poprawnie utworzono notatkę.';
-          7:    Result:='Poprawnie zaktualizowano notatkę.';
-          8:    Result:='Poprawnie usunięto notatkę.';
-          9:    Result:='Poprawnie odebrano informacje o użytkowniku.';
+          1:    Result:='Użytkownik poprawnie utworzony';
+          2:    Result:='Użytkownik poprawnie zaktualizowany';
+          3:    Result:='Użytkownik poprawnie usunięty';
+          4:    Result:='Poprawnie odebrano listę notatek';
+          5:    Result:='Poprawnie odebrano notatkę';
+          6:    Result:='Poprawnie utworzono notatkę';
+          7:    Result:='Poprawnie zaktualizowano notatkę';
+          8:    Result:='Poprawnie usunięto notatkę';
+          9:    Result:='Poprawnie odebrano informacje o użytkowniku';
+
           1024: Result:='Serwer został zmieniony.';
      else
          Result:='?';
@@ -1419,7 +1421,7 @@ begin
      else
      begin
           Button3.Enabled:=false;
-          Label10.Caption:=whichCode(res);
+          Label10.Caption:=whichCode(res)+'.';
           if CheckBox1.Checked then Label2.Caption:='Nie udało się zarejestrować. :('
              else Label2.Caption:='Nie udało się zalogować. :(';
           if(settingsLoaded) then settingsLoaded:=false;
