@@ -1,0 +1,123 @@
+object Form2: TForm2
+  Left = 514
+  Height = 240
+  Top = 134
+  Width = 240
+  ActiveControl = Button1
+  BorderStyle = bsDialog
+  Caption = 'Informacje o programie'
+  ClientHeight = 240
+  ClientWidth = 240
+  Color = clWhite
+  Constraints.MinHeight = 240
+  Constraints.MinWidth = 226
+  Font.CharSet = 4
+  OnResize = FormResize
+  Position = poScreenCenter
+  LCLVersion = '1.2.6.0'
+  object Label1: TLabel
+    Left = 8
+    Height = 29
+    Top = 8
+    Width = 224
+    AutoSize = False
+    Caption = 'Noter Client v1.0'
+    Font.CharSet = 4
+    Font.Height = -24
+    Font.Style = [fsBold, fsItalic]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 26
+    Top = 48
+    Width = 224
+    Caption = 'Programowanie, projektowanie, pomysł, testowanie:'
+    Constraints.MaxWidth = 224
+    Constraints.MinWidth = 224
+    Font.CharSet = 4
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    WordWrap = True
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 13
+    Top = 80
+    Width = 224
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Bartłomiej "Magnetic-Fox" Węgrzyn'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 208
+    Width = 224
+    Caption = 'Zamknij'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 13
+    Top = 104
+    Width = 48
+    Caption = 'Kontakt:'
+    Font.CharSet = 4
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 8
+    Height = 13
+    Top = 120
+    Width = 224
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'magnetic-fox@hotmail.com'
+    ParentColor = False
+    OnClick = Label5Click
+    OnMouseDown = Label5MouseDown
+    OnMouseUp = Label5MouseUp
+    OnMouseEnter = Label5MouseEnter
+    OnMouseLeave = Label5MouseLeave
+  end
+  object Label6: TLabel
+    Left = 8
+    Height = 13
+    Top = 144
+    Width = 95
+    Caption = 'Okres tworzenia:'
+    Font.CharSet = 4
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label7: TLabel
+    Left = 8
+    Height = 13
+    Top = 160
+    Width = 224
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '05-17.11.2021'
+    ParentColor = False
+  end
+  object Label8: TLabel
+    Left = 8
+    Height = 13
+    Top = 184
+    Width = 224
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '©2021 Bartłomiej "Magnetic-Fox" Węgrzyn!'
+    Font.CharSet = 4
+    ParentColor = False
+    ParentFont = False
+  end
+end

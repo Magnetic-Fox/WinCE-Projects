@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1
+  Forms, Unit1, Unit2
   {$IFDEF LCLWinCE}
   , WinCEInt
   {$ENDIF}
@@ -20,8 +20,9 @@ begin
      {$IFDEF LCLWinCE}
      WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
      {$ENDIF}
-     Application.Title:='Noter Client v1.0';
+     Application.Title:='Noter Client';
      Application.Initialize;
      Application.CreateForm(TForm1, Form1);
+     Application.CreateForm(TForm2, Form2);
      Application.Run;
 end.

@@ -3,7 +3,8 @@ object Form1: TForm1
   Height = 268
   Top = 134
   Width = 240
-  Caption = 'Noter Client v1.0'
+  ActiveControl = Notebook1
+  Caption = 'Noter Client'
   ClientHeight = 268
   ClientWidth = 240
   Color = clWhite
@@ -20,7 +21,7 @@ object Form1: TForm1
     Height = 252
     Top = 0
     Width = 240
-    PageIndex = 2
+    PageIndex = 0
     TabOrder = 0
     TabStop = True
     object Page1: TPage
@@ -39,59 +40,32 @@ object Form1: TForm1
         ParentColor = False
         ParentFont = False
       end
-      object Label3: TLabel
+      object CheckBox1: TCheckBox
         Left = 8
-        Height = 13
-        Top = 48
-        Width = 85
-        Caption = 'Adres serwera:'
-        Font.CharSet = 4
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
+        Height = 17
+        Top = 236
+        Width = 73
+        Caption = 'Zarejestruj'
+        TabOrder = 4
       end
-      object Edit1: TEdit
+      object Button1: TButton
+        Left = 136
+        Height = 25
+        Top = 232
+        Width = 96
+        Caption = 'Rozpocznij!'
+        OnClick = Button1Click
+        TabOrder = 5
+      end
+      object Edit4: TEdit
         Left = 8
         Height = 21
-        Top = 64
+        Top = 208
         Width = 224
-        TabOrder = 0
-      end
-      object Label4: TLabel
-        Left = 8
-        Height = 13
-        Top = 96
-        Width = 38
-        Caption = 'Udział:'
-        Font.CharSet = 4
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-      end
-      object Edit2: TEdit
-        Left = 8
-        Height = 21
-        Top = 112
-        Width = 224
-        TabOrder = 1
-      end
-      object Label5: TLabel
-        Left = 8
-        Height = 13
-        Top = 144
-        Width = 114
-        Caption = 'Nazwa użytkownika:'
-        Font.CharSet = 4
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-      end
-      object Edit3: TEdit
-        Left = 8
-        Height = 21
-        Top = 160
-        Width = 224
-        TabOrder = 2
+        EchoMode = emPassword
+        OnEnter = Edit4Enter
+        PasswordChar = '*'
+        TabOrder = 3
       end
       object Label6: TLabel
         Left = 8
@@ -104,31 +78,62 @@ object Form1: TForm1
         ParentColor = False
         ParentFont = False
       end
-      object Edit4: TEdit
+      object Edit3: TEdit
         Left = 8
         Height = 21
-        Top = 208
+        Top = 160
         Width = 224
-        EchoMode = emPassword
-        PasswordChar = '*'
-        TabOrder = 3
+        OnEnter = Edit3Enter
+        TabOrder = 2
       end
-      object Button1: TButton
-        Left = 136
-        Height = 25
-        Top = 232
-        Width = 96
-        Caption = 'Rozpocznij!'
-        OnClick = Button1Click
-        TabOrder = 5
-      end
-      object CheckBox1: TCheckBox
+      object Label5: TLabel
         Left = 8
-        Height = 17
-        Top = 236
-        Width = 73
-        Caption = 'Zarejestruj'
-        TabOrder = 4
+        Height = 13
+        Top = 144
+        Width = 114
+        Caption = 'Nazwa użytkownika:'
+        Font.CharSet = 4
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Edit2: TEdit
+        Left = 8
+        Height = 21
+        Top = 112
+        Width = 224
+        OnEnter = Edit2Enter
+        TabOrder = 1
+      end
+      object Label4: TLabel
+        Left = 8
+        Height = 13
+        Top = 96
+        Width = 38
+        Caption = 'Udział:'
+        Font.CharSet = 4
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Edit1: TEdit
+        Left = 8
+        Height = 21
+        Top = 64
+        Width = 224
+        OnEnter = Edit1Enter
+        TabOrder = 0
+      end
+      object Label3: TLabel
+        Left = 8
+        Height = 13
+        Top = 48
+        Width = 85
+        Caption = 'Adres serwera:'
+        Font.CharSet = 4
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
       end
     end
     object Page2: TPage
@@ -270,6 +275,7 @@ object Form1: TForm1
         Top = 64
         Width = 224
         EchoMode = emPassword
+        OnEnter = Edit5Enter
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -280,7 +286,7 @@ object Form1: TForm1
         Width = 96
         Caption = 'Zarejestruj!'
         OnClick = Button4Click
-        TabOrder = 1
+        TabOrder = 2
       end
       object Button5: TButton
         Left = 8
@@ -289,7 +295,7 @@ object Form1: TForm1
         Width = 96
         Caption = '< Wróć'
         OnClick = Button5Click
-        TabOrder = 2
+        TabOrder = 1
       end
       object Label57: TLabel
         Left = 8
@@ -341,6 +347,7 @@ object Form1: TForm1
         Top = 16
         Width = 240
         OnChange = Edit6Change
+        OnEnter = Edit6Enter
         TabOrder = 0
       end
       object Label14: TLabel
@@ -360,6 +367,7 @@ object Form1: TForm1
         Top = 56
         Width = 240
         OnChange = Memo1Change
+        OnEnter = Memo1Enter
         ScrollBars = ssAutoVertical
         TabOrder = 1
         WantTabs = True
@@ -374,7 +382,7 @@ object Form1: TForm1
         Checked = True
         OnChange = CheckBox2Change
         State = cbChecked
-        TabOrder = 3
+        TabOrder = 2
       end
       object Image1: TImage
         Left = 144
@@ -390,7 +398,7 @@ object Form1: TForm1
         Width = 80
         Caption = 'Dodaj'
         OnClick = Button12Click
-        TabOrder = 2
+        TabOrder = 3
       end
     end
     object Page6: TPage
@@ -836,6 +844,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnChange = Edit7Change
+        OnEnter = Edit7Enter
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -857,6 +866,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnChange = Edit8Change
+        OnEnter = Edit8Enter
         PasswordChar = '*'
         TabOrder = 1
       end
@@ -878,6 +888,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnChange = Edit9Change
+        OnEnter = Edit9Enter
         PasswordChar = '*'
         TabOrder = 2
       end
@@ -931,6 +942,7 @@ object Form1: TForm1
         Top = 48
         Width = 224
         EchoMode = emPassword
+        OnEnter = Edit10Enter
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -998,6 +1010,7 @@ object Form1: TForm1
         Top = 48
         Width = 224
         OnChange = Edit11Change
+        OnEnter = Edit11Enter
         TabOrder = 0
       end
       object Label51: TLabel
@@ -1017,6 +1030,7 @@ object Form1: TForm1
         Top = 96
         Width = 224
         OnChange = Edit12Change
+        OnEnter = Edit12Enter
         TabOrder = 1
       end
       object Button23: TButton
@@ -1049,7 +1063,7 @@ object Form1: TForm1
         Width = 240
         HorzScrollBar.Page = 1
         HorzScrollBar.Visible = False
-        VertScrollBar.Increment = 16
+        VertScrollBar.Increment = 1
         VertScrollBar.Page = 1
         VertScrollBar.Smooth = True
         VertScrollBar.Range = 2272
@@ -1217,6 +1231,11 @@ object Form1: TForm1
     ParentBidiMode = False
     ParentColor = False
     Visible = False
+    OnClick = Label25Click
+    OnMouseDown = Label25MouseDown
+    OnMouseUp = Label25MouseUp
+    OnMouseEnter = Label25MouseEnter
+    OnMouseLeave = Label25MouseLeave
   end
   object ImageList1: TImageList
     left = 192

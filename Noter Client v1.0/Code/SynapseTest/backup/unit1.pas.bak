@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, httpsend, synacode, fpjson, jsonparser, Dos, Windows,
-  synacrypt, IniFiles
+  synacrypt, IniFiles, Unit2
   {$IFDEF LCLWinCE}
   , sipapi
   {$ENDIF}
@@ -169,17 +169,36 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
+    procedure Edit10Enter(Sender: TObject);
     procedure Edit11Change(Sender: TObject);
+    procedure Edit11Enter(Sender: TObject);
     procedure Edit12Change(Sender: TObject);
+    procedure Edit12Enter(Sender: TObject);
+    procedure Edit1Enter(Sender: TObject);
+    procedure Edit2Enter(Sender: TObject);
+    procedure Edit3Enter(Sender: TObject);
+    procedure Edit4Enter(Sender: TObject);
+    procedure Edit5Enter(Sender: TObject);
     procedure Edit6Change(Sender: TObject);
+    procedure Edit6Enter(Sender: TObject);
     procedure Edit7Change(Sender: TObject);
+    procedure Edit7Enter(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
+    procedure Edit8Enter(Sender: TObject);
     procedure Edit9Change(Sender: TObject);
+    procedure Edit9Enter(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure Image1Click(Sender: TObject);
+    procedure Label25Click(Sender: TObject);
+    procedure Label25MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Label25MouseEnter(Sender: TObject);
+    procedure Label25MouseLeave(Sender: TObject);
+    procedure Label25MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Label58Click(Sender: TObject);
     procedure Label58MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -189,6 +208,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Memo1Change(Sender: TObject);
+    procedure Memo1Enter(Sender: TObject);
     procedure Page10BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page10Resize(Sender: TObject);
@@ -344,6 +364,18 @@ begin
      end;
      Result:=CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam);
 end;
+
+Procedure OpenSIPWhenNecessary;
+var x: SIPInfo;
+begin
+     system.FillChar(x,sizeof(x),0);
+     x.cbSize:=sizeof(x);
+     If SipGetInfo(Addr(x)) then
+     begin
+          If((x.fdwFlags and 1)=0) then SipShowIM(SIPF_ON);
+     end
+     else SipShowIM(SIPF_ON);
+end;
 {$ENDIF}
 
 Function Question(text: utf8string): boolean;
@@ -464,13 +496,11 @@ Function whichCode(code: integer): utf8string;
 begin
      Case code of
           -1024:Result:='Błędna odpowiedź serwera';
-
           -768: Result:='Serwer tymczasowo wyłączony';
           -512: Result:='Wewnętrzny błąd serwera';
-
           -14:  Result:='Notatka już odblokowana';
           -13:  Result:='Notatka już zablokowana';
-          -12:  Result:='Notatka zablokowana';
+          -12:  Result:='Notatka jest zablokowana';
           -11:  Result:='Błąd usuwania użytkownika';
           -10:  Result:='Użytkownik nie istnieje';
           -9:   Result:='Notatka nie istnieje';
@@ -482,22 +512,19 @@ begin
           -3:   Result:='Wybrana nazwa użytkownika jest zajęta';
           -2:   Result:='Brak użytecznych informacji w żądaniu';
           -1:   Result:='Nieprawidłowy typ żądania';
-
           0:    Result:='OK';
-
-          1:    Result:='Użytkownik poprawnie utworzony';
-          2:    Result:='Użytkownik poprawnie zaktualizowany';
-          3:    Result:='Użytkownik poprawnie usunięty';
-          4:    Result:='Poprawnie odebrano listę notatek';
-          5:    Result:='Poprawnie odebrano notatkę';
-          6:    Result:='Poprawnie utworzono notatkę';
-          7:    Result:='Poprawnie zaktualizowano notatkę';
-          8:    Result:='Poprawnie usunięto notatkę';
-          9:    Result:='Poprawnie odebrano informacje o użytkowniku';
-          10:   Result:='Notatka zablokowana pomyślnie';
-          11:   Result:='Notatka odblokowana pomyślnie';
-
-          1024: Result:='Serwer został zmieniony';
+          1:    Result:='Pomyślnie utworzono użytkownika';
+          2:    Result:='Pomyślnie zaktualizowano użytkownika';
+          3:    Result:='Pomyślnie usunięto użytkownika';
+          4:    Result:='Pomyślnie odebrano listę notatek';
+          5:    Result:='Pomyślnie odebrano notatkę';
+          6:    Result:='Pomyślnie utworzono notatkę';
+          7:    Result:='Pomyślnie zaktualizowano notatkę';
+          8:    Result:='Pomyślnie usunięto notatkę';
+          9:    Result:='Pomyślnie odebrano informacje o użytkowniku';
+          10:   Result:='Pomyślnie zablokowano notatkę';
+          11:   Result:='Pomyślnie odblokowano notatkę';
+          1024: Result:='Pomyślnie zmieniono serwer';
      else
          Result:='Nieznany kod odpowiedzi serwera';
      end;
@@ -817,7 +844,7 @@ begin
           tempNote.subject:='';
           tempNote.entry:='';
           changeIconAndLastCode(emptyImage);
-          selectedNoteIndex:=-1;
+          If newIDSet then selectedNoteIndex:=0;
           ListBox1.ItemIndex:=selectedNoteIndex;
           Notebook1.PageIndex:=2;
      end;
@@ -845,9 +872,74 @@ begin
           res:=getAnswerInfo(data,atta);
           if res<OK then
           begin
-               Error(whichCode(res));
-               server:=tempServer;
-               share:=tempShare;
+               If res=loginIncorrect then
+               begin
+                    If Question('Ponieważ serwer został zmieniony, obecne dane logowania są niepoprawne. Czy chcesz je zmienić?') then
+                    begin
+                         ini.WriteString('server','address',server);
+                         ini.WriteString('server','share',share);
+                         Edit1.Text:=server;
+                         Edit2.Text:=share;
+                         Edit3.Text:='';
+                         Edit4.Text:='';
+                         Edit5.Text:='';
+                         ListBox1.Clear;
+                         Edit6.Text:='';
+                         Memo1.Clear;
+                         username:='';
+                         password:='';
+                         tempNote.id:=0;
+                         tempNote.added:=0;
+                         tempNote.lastMod:=0;
+                         tempNote.locked:=false;
+                         tempNote.UA:='';
+                         tempNote.lastUA:='';
+                         tempNote.subject:='';
+                         tempNote.entry:='';
+                         changeIconAndLastCode(emptyImage);
+                         noteChanged:=false;
+                         userChanged:=false;
+                         serverChanged:=false;
+                         settingsLoaded:=false;
+                         ini.DeleteKey('user','username');
+                         ini.DeleteKey('user','password');
+                         Button6.Enabled:=false;
+                         Button6.Visible:=false;
+                         Button7.Enabled:=false;
+                         Button7.Visible:=false;
+                         Button8.Enabled:=false;
+                         Button8.Visible:=false;
+                         Button9.Enabled:=false;
+                         Button9.Visible:=false;
+                         Button10.Enabled:=false;
+                         Button10.Visible:=false;
+                         Button11.Enabled:=false;
+                         Button11.Visible:=false;
+                         Label25.Enabled:=false;
+                         Label25.Visible:=false;
+                         CheckBox2.Checked:=true;
+                         Button12.Caption:='Dodaj';
+                         selectedNoteIndex:=-1;
+                         newSize:=false;
+                         Notebook1.Height:=Form1.Height;
+                         Notebook1.PageIndex:=0;
+                    end
+                    else
+                    begin
+                         server:=tempServer;
+                         share:=tempShare;
+                         Edit11.Text:=server;
+                         Edit12.Text:=share;
+                         serverChanged:=false;
+                         Information('Poprzednie dane serwera zostały przywrócone');
+                    end;
+               end
+               else
+               begin
+                    Error(whichCode(res));
+                    server:=tempServer;
+                    share:=tempShare;
+               end;
           end
           else
           begin
@@ -1155,7 +1247,7 @@ begin
      begin
           If Edit8.Text=Edit9.Text then
           begin
-               data:=Post('change',username,password,'','',Edit8.Text);
+               data:=Post('change',username,Edit7.Text,'','',Edit8.Text);
                res:=getAnswerInfo(data,atta);
                If res=userUpdated then
                begin
@@ -1248,9 +1340,23 @@ begin
      end;
 end;
 
+procedure TForm1.Edit10Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
 procedure TForm1.Edit11Change(Sender: TObject);
 begin
      serverChanged:=true;
+end;
+
+procedure TForm1.Edit11Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
 end;
 
 procedure TForm1.Edit12Change(Sender: TObject);
@@ -1258,9 +1364,58 @@ begin
      serverChanged:=true;
 end;
 
+procedure TForm1.Edit12Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit1Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit2Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit3Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit4Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit5Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
 procedure TForm1.Edit6Change(Sender: TObject);
 begin
      noteChanged:=true;
+end;
+
+procedure TForm1.Edit6Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
 end;
 
 procedure TForm1.Edit7Change(Sender: TObject);
@@ -1268,14 +1423,35 @@ begin
      userChanged:=true;
 end;
 
+procedure TForm1.Edit7Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
 procedure TForm1.Edit8Change(Sender: TObject);
 begin
      userChanged:=true;
 end;
 
+procedure TForm1.Edit8Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
 procedure TForm1.Edit9Change(Sender: TObject);
 begin
      userChanged:=true;
+end;
+
+procedure TForm1.Edit9Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -1317,6 +1493,33 @@ begin
              If lastCode<OK then Error(whichCode(lastCode))
                 else Information(whichCode(lastCode));
         end;
+end;
+
+procedure TForm1.Label25Click(Sender: TObject);
+begin
+     Form2.ShowModal;
+end;
+
+procedure TForm1.Label25MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+     Label25.Font.Style:=[fsBold,fsUnderline];
+end;
+
+procedure TForm1.Label25MouseEnter(Sender: TObject);
+begin
+     Label25.Font.Style:=[fsBold,fsUnderline];
+end;
+
+procedure TForm1.Label25MouseLeave(Sender: TObject);
+begin
+     Label25.Font.Style:=[];
+end;
+
+procedure TForm1.Label25MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+     Label25.Font.Style:=[];
 end;
 
 procedure TForm1.Label58Click(Sender: TObject);
@@ -1407,6 +1610,13 @@ end;
 procedure TForm1.Memo1Change(Sender: TObject);
 begin
      noteChanged:=true;
+end;
+
+procedure TForm1.Memo1Enter(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     OpenSIPWhenNecessary;
+     {$ENDIF}
 end;
 
 procedure TForm1.Page10BeforeShow(ASender: TObject; ANewPage: TPage;
@@ -1569,6 +1779,7 @@ begin
                end;
                Label64.Caption:=IntToStr(length(elements));
                ListBox1.ItemIndex:=selectedNoteIndex;
+               If selectedNoteIndex>=0 then Label64.Caption:=IntToStr(selectedNoteIndex+1)+'/'+Label64.Caption;
           end
           else
           begin

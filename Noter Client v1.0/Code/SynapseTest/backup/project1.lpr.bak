@@ -17,8 +17,10 @@ uses
 
 begin
      RequireDerivedFormResource := True;
+     {$IFDEF LCLWinCE}
      WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
-     Application.Title:='Noter Client v1.0';
+     {$ENDIF}
+     Application.Title:='Noter Client';
      Application.Initialize;
      Application.CreateForm(TForm1, Form1);
      Application.Run;
