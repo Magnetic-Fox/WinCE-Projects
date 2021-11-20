@@ -13,6 +13,113 @@ uses
   {$ENDIF}
   ;
 
+{ ---------------------------------------------------------------------------- }
+
+{ Stałe }
+
+{ Dodatkowe kody }
+const emptyImage=              -10240;
+const connecting=              10240;
+
+{ Kody odpowiedzi }
+const getError=                -1024;
+const serviceDisabled=         -768;
+const serverError=             -512;
+const noteAlreadyUnlocked=     -14;
+const noteAlreadyLocked=       -13;
+const noteLocked=              -12;
+const userRemoveError=         -11;
+const userNotExist=            -10;
+const noteNotExist=            -9;
+const noNecessaryInfo=         -8;
+const userDeactivated=         -7;
+const loginIncorrect=          -6;
+const unknownAction=           -5;
+const noCredentials=           -4;
+const userExists=              -3;
+const noUsableInfoInPOST=      -2;
+const invalidRequest=          -1;
+const OK=                      0;
+const userCreated=             1;
+const userUpdated=             2;
+const userRemoved=             3;
+const listSuccessful=          4;
+const noteGetSuccessful=       5;
+const noteCreateSuccessful=    6;
+const noteUpdateSuccessful=    7;
+const noteDeleteSuccessful=    8;
+const userInfoGetSuccessful=   9;
+const noteLockSuccessful=      10;
+const noteUnlockSuccessful=    11;
+const serverChangedSuccessful= 1024;
+
+{ ---------------------------------------------------------------------------- }
+
+{ Definicje struktur }
+
+{ Struktura elementu }
+type element = record
+        name:    utf8string;
+        lastMod: TDateTime;
+        id:      integer;
+end;
+
+{ Struktura notatki }
+type note = record
+     id:             integer;
+     subject, entry: utf8string;
+     added, lastMod: TDateTime;
+     locked:         boolean;
+     UA, lastUA:     utf8string;
+end;
+
+{ Struktura użytkownika }
+type user = record
+     id:          integer;
+     username:    utf8string;
+     registered:  TDateTime;
+     UA:          utf8string;
+     lastChanged: TDateTime;
+     lastUA:      utf8string;
+end;
+
+{ Struktura informacji o serwerze }
+type serverInfo = record
+           name, timezone, version: utf8string;
+end;
+
+{ Dodatkowe typy }
+type att= array of utf8string;
+type elm= array of element;
+
+{ ---------------------------------------------------------------------------- }
+
+{ Prototypy funkcji i procedur }
+
+{$IFDEF LCLWinCE}
+Function SHGetShortcutTarget(szShortcut, szTarget: LPTSTR; cbMax: integer): WordBool; stdcall; external 'coredll.dll' name 'SHGetShortcutTarget';
+Function wndCallBack(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam): LRESULT; stdcall;
+Procedure OpenSIPWhenNecessary;
+{$ENDIF}
+Function Question(text: utf8string): boolean;
+Procedure Information(text: utf8string);
+Procedure Error(text: utf8string);
+Function userOrServerChanged(): boolean;
+Function generateKey(server: utf8string): utf8string;
+Function Post(action, username, password: utf8string; subject: utf8string = ''; entry: utf8string = ''; newPassword: utf8string = ''; noteID: integer = 0): utf8string;
+Function whichCode(code: integer): utf8string;
+Function getAnswerInfo(input: utf8string; var attachment: att): integer;
+Function getUser(input: utf8string; var output: user): boolean;
+Function getList(input: utf8string; var elements: elm): boolean;
+Function getNote(input: utf8string; var output: note): boolean;
+Function getServer(input: utf8string; var output: serverInfo): boolean;
+Function getNewID(input: utf8string; var newID: integer): boolean;
+Procedure changeIconAndLastCode(code: integer);
+
+{ ---------------------------------------------------------------------------- }
+
+{ Definicja głównego formularza }
+
 type
 
   { TForm1 }
@@ -254,76 +361,8 @@ type
 
 { ---------------------------------------------------------------------------- }
 
-{ Struktura elementu }
-element = record
-        name:    utf8string;
-        lastMod: TDateTime;
-        id:      integer;
-end;
-
-{ Struktura notatki }
-note = record
-     id:             integer;
-     subject, entry: utf8string;
-     added, lastMod: TDateTime;
-     locked:         boolean;
-     UA, lastUA:     utf8string;
-end;
-
-user = record
-     id:          integer;
-     username:    utf8string;
-     registered:  TDateTime;
-     UA:          utf8string;
-     lastChanged: TDateTime;
-     lastUA:      utf8string;
-end;
-
-serverInfo = record
-           name, timezone, version: utf8string;
-end;
-
-{ Dodatkowe typy }
-type att= array of utf8string;
-type elm= array of element;
-
-{ Dodatkowe kody }
-const emptyImage=              -10240;
-const connecting=              10240;
-
-{ Kody odpowiedzi }
-const getError=                -1024;
-const serviceDisabled=         -768;
-const serverError=             -512;
-const noteAlreadyUnlocked=     -14;
-const noteAlreadyLocked=       -13;
-const noteLocked=              -12;
-const userRemoveError=         -11;
-const userNotExist=            -10;
-const noteNotExist=            -9;
-const noNecessaryInfo=         -8;
-const userDeactivated=         -7;
-const loginIncorrect=          -6;
-const unknownAction=           -5;
-const noCredentials=           -4;
-const userExists=              -3;
-const noUsableInfoInPOST=      -2;
-const invalidRequest=          -1;
-const OK=                      0;
-const userCreated=             1;
-const userUpdated=             2;
-const userRemoved=             3;
-const listSuccessful=          4;
-const noteGetSuccessful=       5;
-const noteCreateSuccessful=    6;
-const noteUpdateSuccessful=    7;
-const noteDeleteSuccessful=    8;
-const userInfoGetSuccessful=   9;
-const noteLockSuccessful=      10;
-const noteUnlockSuccessful=    11;
-const serverChangedSuccessful= 1024;
-
 { Zmienne }
+
 var Form1: TForm1;
     elements: array of element;
     userAgent, server, share, username, password, iniFile: utf8string;
@@ -346,6 +385,9 @@ implementation
 {$IFDEF LCLWinCE}
 Function wndCallBack(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam): LRESULT; stdcall;
 var x: SIPInfo;
+    zw:widestring;
+    z: PWideChar;
+    i: integer;
 begin
      if uMsg=WM_SETTINGCHANGE then
      begin
@@ -361,6 +403,22 @@ begin
                        Form1.Height:=FormSize;
                end;
           end;
+     end
+     else if uMsg=WM_HELP then
+     begin
+          zw:='';
+          For i:=0 to 1024 do zw:=zw+' ';
+          z:=PWideChar(zw);
+          If SHGetShortcutTarget('\Windows\Help\Noter Client.lnk',z,1024) then
+          begin
+               zw:=z;
+               delete(zw,1,1);
+               delete(zw,length(zw),1);
+               zw:='file:'+zw+'#Contents';
+               z:=PWideChar(zw);
+               CreateProcess('peghelp.exe',z,nil,nil,false,0,nil,nil,nil,nil);
+          end
+          else Error('Plik pomocy nie został zainstalowany!');
      end;
      Result:=CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam);
 end;
@@ -1507,12 +1565,12 @@ end;
 procedure TForm1.Label25MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-     Label25.Font.Style:=[fsBold,fsUnderline];
+     Label25.Font.Style:=[fsBold];
 end;
 
 procedure TForm1.Label25MouseEnter(Sender: TObject);
 begin
-     Label25.Font.Style:=[fsBold,fsUnderline];
+     Label25.Font.Style:=[fsBold];
 end;
 
 procedure TForm1.Label25MouseLeave(Sender: TObject);

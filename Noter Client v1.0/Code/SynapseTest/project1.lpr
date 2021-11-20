@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, Unit1, Unit2
   {$IFDEF LCLWinCE}
-  , WinCEInt
+  , WinCEInt, comobj
   {$ENDIF}
   { you can add units after this };
 
@@ -19,6 +19,7 @@ begin
      RequireDerivedFormResource := True;
      {$IFDEF LCLWinCE}
      WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
+
      {$ENDIF}
      Application.Title:='Noter Client';
      Application.Initialize;
