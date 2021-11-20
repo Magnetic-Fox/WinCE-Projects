@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, httpsend, synacode, fpjson, jsonparser, Dos, Windows,
-  synacrypt, IniFiles, Unit2
+  ComCtrls, ExtCtrls, Buttons, httpsend, synacode, fpjson, jsonparser, Dos,
+  Windows, synacrypt, IniFiles, Unit2
   {$IFDEF LCLWinCE}
   , sipapi
   {$ENDIF}
@@ -15,13 +15,16 @@ uses
 
 { ---------------------------------------------------------------------------- }
 
-{ Stałe }
+{ Constants }
 
-{ Dodatkowe kody }
+{ Files }
+const helpFile=                '\Windows\Help\Noter Client.lnk';
+
+{ Additional codes }
 const emptyImage=              -10240;
 const connecting=              10240;
 
-{ Kody odpowiedzi }
+{ Answer codes }
 const getError=                -1024;
 const serviceDisabled=         -768;
 const serverError=             -512;
@@ -55,16 +58,16 @@ const serverChangedSuccessful= 1024;
 
 { ---------------------------------------------------------------------------- }
 
-{ Definicje struktur }
+{ Structures definition }
 
-{ Struktura elementu }
+{ Element structure }
 type element = record
-        name:    utf8string;
-        lastMod: TDateTime;
-        id:      integer;
+     { name:    utf8string;
+       lastMod: TDateTime; }
+     id:      integer;
 end;
 
-{ Struktura notatki }
+{ Note structure }
 type note = record
      id:             integer;
      subject, entry: utf8string;
@@ -73,7 +76,7 @@ type note = record
      UA, lastUA:     utf8string;
 end;
 
-{ Struktura użytkownika }
+{ User structure }
 type user = record
      id:          integer;
      username:    utf8string;
@@ -83,25 +86,25 @@ type user = record
      lastUA:      utf8string;
 end;
 
-{ Struktura informacji o serwerze }
+{ Server information structure }
 type serverInfo = record
-           name, timezone, version: utf8string;
+     name, timezone, version: utf8string;
 end;
 
-{ Dodatkowe typy }
+{ Additional types }
 type att= array of utf8string;
 type elm= array of element;
 
 { ---------------------------------------------------------------------------- }
 
-{ Prototypy funkcji i procedur }
+{ Functions and procedures prototypes }
 
 {$IFDEF LCLWinCE}
 Function SHGetShortcutTarget(szShortcut, szTarget: LPTSTR; cbMax: integer): WordBool; stdcall; external 'coredll.dll' name 'SHGetShortcutTarget';
 Function wndCallBack(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam): LRESULT; stdcall;
 Procedure OpenSIPWhenNecessary;
 {$ENDIF}
-Function Question(text: utf8string): boolean;
+Function Question(text: utf8string; ask: boolean = true): boolean;
 Procedure Information(text: utf8string);
 Procedure Error(text: utf8string);
 Function userOrServerChanged(): boolean;
@@ -110,7 +113,7 @@ Function Post(action, username, password: utf8string; subject: utf8string = ''; 
 Function whichCode(code: integer): utf8string;
 Function getAnswerInfo(input: utf8string; var attachment: att): integer;
 Function getUser(input: utf8string; var output: user): boolean;
-Function getList(input: utf8string; var elements: elm): boolean;
+Function getList(input: utf8string; var elements: elm; var ListBox: TListBox): boolean;
 Function getNote(input: utf8string; var output: note): boolean;
 Function getServer(input: utf8string; var output: serverInfo): boolean;
 Function getNewID(input: utf8string; var newID: integer): boolean;
@@ -118,7 +121,7 @@ Procedure changeIconAndLastCode(code: integer);
 
 { ---------------------------------------------------------------------------- }
 
-{ Definicja głównego formularza }
+{ Main form definition }
 
 type
 
@@ -361,7 +364,7 @@ type
 
 { ---------------------------------------------------------------------------- }
 
-{ Zmienne }
+{ Variables }
 
 var Form1: TForm1;
     elements: array of element;
@@ -409,7 +412,7 @@ begin
           zw:='';
           For i:=0 to 1024 do zw:=zw+' ';
           z:=PWideChar(zw);
-          If SHGetShortcutTarget('\Windows\Help\Noter Client.lnk',z,1024) then
+          If SHGetShortcutTarget(helpFile,z,1024) then
           begin
                zw:=z;
                delete(zw,1,1);
@@ -436,13 +439,18 @@ begin
 end;
 {$ENDIF}
 
-Function Question(text: utf8string): boolean;
+Function Question(text: utf8string; ask: boolean = true): boolean;
 var {$IFDEF LCLWinCE}
     txW, titleW: widestring;
     {$ELSE}
     tx, title: string;
     {$ENDIF}
 begin
+     If not ask then
+     begin
+          Result:=true;
+          exit;
+     end;
      {$IFDEF LCLWinCE}
      txW:=UTF8ToAnsi(text);
      titleW:=UTF8ToAnsi(Application.Title);
@@ -637,11 +645,12 @@ begin
      Result:=true;
 end;
 
-Function getList(input: utf8string; var elements: elm): boolean;
+Function getList(input: utf8string; var elements: elm; var ListBox: TListBox): boolean;
 var jData: TJSONData;
     x, count: integer;
-    list:  array of element;
-    obj:   element;
+    name:     utf8string;
+    list:     array of element;
+    obj:      element;
 begin
      Try
         jData:=GetJSON(input);
@@ -649,11 +658,13 @@ begin
         count:=jData.FindPath('answer').FindPath('count').AsInteger;
         SetLength(list,0);
         SetLength(list,count);
+        ListBox.Clear;
         For x:=0 to count-1 do
         begin
              obj.id:=jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('id').AsInteger;
-             obj.name:=jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('subject').AsString;
-             obj.lastMod:=StrToDateTime(jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('last_modified').AsString);
+             {obj.}name:=jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('subject').AsString;
+             { obj.lastMod:=StrToDateTime(jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('last_modified').AsString); }
+             ListBox.AddItem({obj.}name,nil);
              list[x]:=obj;
         end;
         elements:=list;
@@ -739,7 +750,8 @@ begin
      Form1.ImageList1.StretchDraw(Form1.Image1.Canvas,imgCode,Form1.Image1.ClientRect);
 end;
 
-{ Elementy formularza }
+{ Form elements }
+
 procedure TForm1.FormCreate(Sender: TObject);
 var version: word;
     aes:     TSynaAes;
@@ -1802,7 +1814,7 @@ end;
 procedure TForm1.Page3BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 var data:       utf8string;
-    res, x:     integer;
+    res{, x}:     integer;
     attachment: att;
 begin
      Form1.Constraints.MinHeight:=64;
@@ -1832,19 +1844,20 @@ begin
      res:=getAnswerInfo(data,attachment);
      if res=listSuccessful then
      begin
-          if getList(data,elements) then
+          if getList(data,elements,ListBox1) then
           begin
-               ListBox1.Clear;
-               For x:=0 to length(elements)-1 do
-               begin
-                    ListBox1.AddItem(elements[x].name,nil);
-               end;
+               { ListBox1.Clear;
+                 For x:=0 to length(elements)-1 do
+                 begin
+                      ListBox1.AddItem(elements[x].name,nil);
+                 end; }
                Label64.Caption:=IntToStr(length(elements));
                ListBox1.ItemIndex:=selectedNoteIndex;
                If selectedNoteIndex>=0 then Label64.Caption:=IntToStr(selectedNoteIndex+1)+'/'+Label64.Caption;
           end
           else
           begin
+               Label64.Caption:='0';
                Error(whichCode(getError));
           end;
      end

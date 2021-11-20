@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Clipbrd, Windows;
+  Clipbrd, ExtCtrls, Windows;
 
 type
 
@@ -14,6 +14,7 @@ type
 
   TForm2 = class(TForm)
     Button1: TButton;
+    Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -22,6 +23,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    Label9: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure Label5Click(Sender: TObject);
@@ -73,7 +75,6 @@ procedure TForm2.FormResize(Sender: TObject);
 begin
      Label3.Constraints.MaxWidth:=Form2.Width-16;
      Label3.Constraints.MinWidth:=Form2.Width-16;
-     Label1.Width:=Form2.Width-16;
      Label3.Width:=Form2.Width-16;
      Label2.Width:=Form2.Width-16;
      Label5.Width:=Form2.Width-16;
