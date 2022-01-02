@@ -18,7 +18,7 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <Language Value="0415"/>
-      <StringTable Comments="Prosty klient notatek sieciowych Noter" CompanyName="Magnetic-Fox" FileDescription="Prosty klient notatek sieciowych Noter" InternalName="noter10.exe" LegalCopyright="©2021 Bartłomiej &quot;Magnetic-Fox&quot; Węgrzyn" LegalTrademarks="Noter™, Magnetic-Fox™" OriginalFilename="noter10.exe" ProductName="Noter Client v1.0" ProductVersion="1.0"/>
+      <StringTable Comments="Prosty klient notatek sieciowych Noter" CompanyName="Magnetic-Fox" FileDescription="Prosty klient notatek sieciowych Noter" InternalName="noter10.exe" LegalCopyright="©2022 Bartłomiej &quot;Magnetic-Fox&quot; Węgrzyn" LegalTrademarks="Noter™, Magnetic-Fox™" OriginalFilename="noter10.exe" ProductName="Noter Client v1.0" ProductVersion="1.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -31,10 +31,13 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
@@ -71,8 +74,8 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
-      <TargetCPU Value="i386"/>
-      <TargetOS Value="win32"/>
+      <TargetCPU Value="arm"/>
+      <TargetOS Value="wince"/>
     </CodeGeneration>
     <Linking>
       <Options>

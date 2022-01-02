@@ -7,19 +7,27 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1, Unit2
+  Forms, Unit1, Unit2, Windows
   {$IFDEF LCLWinCE}
-  , WinCEInt
+  , WinCEInt, comobj
   {$ENDIF}
   { you can add units after this };
 
 {$R *.res}
+
+var existingWindow: windows.HWND;
 
 begin
      RequireDerivedFormResource := True;
      {$IFDEF LCLWinCE}
      WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
      {$ENDIF}
+     existingWindow:=windows.FindWindowW(nil,PWideChar('Noter Client'));
+     If existingWindow<>0 then
+     begin
+          windows.SendMessageW(existingWindow,windows.WM_USER,1,0);
+          Exit;
+     end;
      Application.Title:='Noter Client';
      Application.Initialize;
      Application.CreateForm(TForm1, Form1);

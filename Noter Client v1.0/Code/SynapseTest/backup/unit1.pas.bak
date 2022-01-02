@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, Buttons, httpsend, synacode, fpjson, jsonparser, Dos,
-  Windows, synacrypt, IniFiles, Unit2
+  ComCtrls, ExtCtrls, Buttons, Menus, httpsend, synacode, fpjson, jsonparser,
+  Dos, Windows, synacrypt, IniFiles, Clipbrd, Unit2
   {$IFDEF LCLWinCE}
   , sipapi
   {$ENDIF}
@@ -18,43 +18,114 @@ uses
 { Constants }
 
 { Files }
-const helpFile=                '\Windows\Help\Noter Client.lnk';
+const helpFile=                    '\Windows\Help\Noter Client.lnk';
 
 { Additional codes }
-const emptyImage=              -10240;
-const connecting=              10240;
+const emptyImage=                  -10240;
+const connecting=                  10240;
 
 { Answer codes }
-const getError=                -1024;
-const serviceDisabled=         -768;
-const serverError=             -512;
-const noteAlreadyUnlocked=     -14;
-const noteAlreadyLocked=       -13;
-const noteLocked=              -12;
-const userRemoveError=         -11;
-const userNotExist=            -10;
-const noteNotExist=            -9;
-const noNecessaryInfo=         -8;
-const userDeactivated=         -7;
-const loginIncorrect=          -6;
-const unknownAction=           -5;
-const noCredentials=           -4;
-const userExists=              -3;
-const noUsableInfoInPOST=      -2;
-const invalidRequest=          -1;
-const OK=                      0;
-const userCreated=             1;
-const userUpdated=             2;
-const userRemoved=             3;
-const listSuccessful=          4;
-const noteGetSuccessful=       5;
-const noteCreateSuccessful=    6;
-const noteUpdateSuccessful=    7;
-const noteDeleteSuccessful=    8;
-const userInfoGetSuccessful=   9;
-const noteLockSuccessful=      10;
-const noteUnlockSuccessful=    11;
-const serverChangedSuccessful= 1024;
+const getError=                    -1024;
+const serviceDisabled=             -768;
+const serverError=                 -512;
+const noteAlreadyUnlocked=         -14;
+const noteAlreadyLocked=           -13;
+const noteLocked=                  -12;
+const userRemoveError=             -11;
+const userNotExist=                -10;
+const noteNotExist=                -9;
+const noNecessaryInfo=             -8;
+const userDeactivated=             -7;
+const loginIncorrect=              -6;
+const unknownAction=               -5;
+const noCredentials=               -4;
+const userExists=                  -3;
+const noUsableInfoInPOST=          -2;
+const invalidRequest=              -1;
+const OK=                          0;
+const userCreated=                 1;
+const userUpdated=                 2;
+const userRemoved=                 3;
+const listSuccessful=              4;
+const noteGetSuccessful=           5;
+const noteCreateSuccessful=        6;
+const noteUpdateSuccessful=        7;
+const noteDeleteSuccessful=        8;
+const userInfoGetSuccessful=       9;
+const noteLockSuccessful=          10;
+const noteUnlockSuccessful=        11;
+const serverChangedSuccessful=     1024;
+
+{ String table }
+const questionUnsavedChanges=      'Czy chcesz porzucić niezapisane zmiany?';
+const questionDeleteAccount=       'Czy na pewno chcesz usunąć swoje konto?'#13#10'Ten proces jest nieodwracalny!';
+const questionChangeCredentials=   'Ponieważ serwer został zmieniony, obecne dane logowania są niepoprawne. Czy chcesz je zmienić?';
+const questionUpdateNote=          'Czy na pewno chcesz zaktualizować tą notatkę?';
+const questionDeleteNote=          'Czy na pewno chcesz usunąć tą notatkę?';
+const questionWantLogout=          'Czy na pewno chcesz się wylogować?';
+
+const informationPreviousServer=   'Poprzednie dane serwera zostały przywrócone';
+
+const errorNoHelpFile=             'Plik pomocy nie został zainstalowany!';
+const errorFillForms=              'Musisz wypełnić widoczne pola.';
+const errorProvidePassword=        'Aby usunąć konto, musisz podać swoje hasło.';
+const errorPasswordNotMatching=    'Hasła nie są takie same!';
+
+const buttonAdd=	           'Dodaj';
+const buttonUpdate=	           'Zaktualizuj';
+const buttonLock=	           'Zablokuj';
+const buttonUnlock=	           'Odblokuj';
+
+const labelConnectionCheckError=   'Sprawdzanie połączenia... BŁĄD';
+const labelConnectionCheckOK=	   'Sprawdzanie połączenia... OK';
+const labelRegisteredSuccessfully= 'Pomyślnie zarejestrowano! :)';
+const labelRegistrationError=	   'Nie udało się zarejestrować. :(';
+const labelLoggedInSuccessfully=   'Pomyślnie zalogowano! :)';
+const labelLoggingInError=	   'Nie udało się zalogować. :(';
+const labelID=			   'ID: ';
+const labelDate=		   'Data: ';
+
+const errorWrongAnswer=            'Błędna odpowiedź serwera';
+const errorServerShutdown=         'Serwer tymczasowo wyłączony';
+const errorInternalServer=         'Wewnętrzny błąd serwera';
+const errorNoteAlreadyUnlocked=    'Notatka już odblokowana';
+const errorNoteAlreadyLocked=      'Notatka już zablokowana';
+const errorNoteLocked=             'Notatka jest zablokowana';
+const errorUserDelete=             'Błąd usuwania użytkownika';
+const errorWrongUser=              'Użytkownik nie istnieje';
+const errorWrongNote=              'Notatka nie istnieje';
+const errorNoNeededData=           'Brak wymaganych informacji';
+const errorUserLocked=             'Użytkownik jest zablokowany';
+const errorWrongCredentials=       'Nieprawidłowe dane logowania';
+const errorWrongCommand=           'Nieznane polecenie';
+const errorNoCredentials=          'Brak danych logowania';
+const errorUsernameTaken=          'Wybrana nazwa użytkownika jest zajęta';
+const errorNoUsableData=           'Brak użytecznych informacji w żądaniu';
+const errorWrongRequest=           'Nieprawidłowy typ żądania';
+const errorUnknownCode=            'Nieznany kod odpowiedzi serwera';
+
+const infoOK=                      'OK';
+
+const infoUserCreated=             'Pomyślnie utworzono użytkownika';
+const infoUserUpdated=             'Pomyślnie zaktualizowano użytkownika';
+const infoUserDeleted=             'Pomyślnie usunięto użytkownika';
+const infoNoteListGot=             'Pomyślnie odebrano listę notatek';
+const infoNoteRetrieved=           'Pomyślnie odebrano notatkę';
+const infoNoteCreated=             'Pomyślnie utworzono notatkę';
+const infoNoteUpdated=             'Pomyślnie zaktualizowano notatkę';
+const infoNoteDeleted=             'Pomyślnie usunięto notatkę';
+const infoUserInfoGot=             'Pomyślnie odebrano informacje o użytkowniku';
+const infoNoteLocked=              'Pomyślnie zablokowano notatkę';
+const infoNoteUnlocked=            'Pomyślnie odblokowano notatkę';
+const infoServerChanged=           'Pomyślnie zmieniono serwer';
+
+{ Temporary booleans }
+const askUnsavedChanges=    true;
+const askDeleteAccount=     true;
+const askChangeCredentials= true;
+const askUpdateNote=        true;
+const askDeleteNote=        true;
+const askWantLogout=        true;
 
 { ---------------------------------------------------------------------------- }
 
@@ -62,8 +133,8 @@ const serverChangedSuccessful= 1024;
 
 { Element structure }
 type element = record
-     { name:    utf8string;
-       lastMod: TDateTime; }
+     { name:    utf8string; }
+     lastMod: TDateTime;
      id:      integer;
 end;
 
@@ -103,6 +174,7 @@ type elm= array of element;
 Function SHGetShortcutTarget(szShortcut, szTarget: LPTSTR; cbMax: integer): WordBool; stdcall; external 'coredll.dll' name 'SHGetShortcutTarget';
 Function wndCallBack(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam): LRESULT; stdcall;
 Procedure OpenSIPWhenNecessary;
+Procedure CloseSIPWhenNecessary;
 {$ENDIF}
 Function Question(text: utf8string; ask: boolean = true): boolean;
 Procedure Information(text: utf8string);
@@ -118,6 +190,7 @@ Function getNote(input: utf8string; var output: note): boolean;
 Function getServer(input: utf8string; var output: serverInfo): boolean;
 Function getNewID(input: utf8string; var newID: integer): boolean;
 Procedure changeIconAndLastCode(code: integer);
+Procedure bringToFront;
 
 { ---------------------------------------------------------------------------- }
 
@@ -238,6 +311,26 @@ type
     Label9: TLabel;
     ListBox1: TListBox;
     Memo1: TMemo;
+    MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem15: TMenuItem;
+    MenuItem16: TMenuItem;
+    MenuItem17: TMenuItem;
+    MenuItem18: TMenuItem;
+    MenuItem19: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem20: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     Notebook1: TNotebook;
     Page1: TPage;
     Page10: TPage;
@@ -251,7 +344,12 @@ type
     Page7: TPage;
     Page8: TPage;
     Page9: TPage;
+    PopupMenu1: TPopupMenu;
+    PopupMenu2: TPopupMenu;
+    PopupMenu3: TPopupMenu;
     ScrollBox1: TScrollBox;
+    Timer1: TTimer;
+    Timer2: TTimer;
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -280,23 +378,35 @@ type
     procedure Button9Click(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
     procedure Edit10Enter(Sender: TObject);
+    procedure Edit10Exit(Sender: TObject);
     procedure Edit11Change(Sender: TObject);
     procedure Edit11Enter(Sender: TObject);
+    procedure Edit11Exit(Sender: TObject);
     procedure Edit12Change(Sender: TObject);
     procedure Edit12Enter(Sender: TObject);
+    procedure Edit12Exit(Sender: TObject);
     procedure Edit1Enter(Sender: TObject);
+    procedure Edit1Exit(Sender: TObject);
     procedure Edit2Enter(Sender: TObject);
+    procedure Edit2Exit(Sender: TObject);
     procedure Edit3Enter(Sender: TObject);
+    procedure Edit3Exit(Sender: TObject);
     procedure Edit4Enter(Sender: TObject);
+    procedure Edit4Exit(Sender: TObject);
     procedure Edit5Enter(Sender: TObject);
+    procedure Edit5Exit(Sender: TObject);
     procedure Edit6Change(Sender: TObject);
     procedure Edit6Enter(Sender: TObject);
+    procedure Edit6Exit(Sender: TObject);
     procedure Edit7Change(Sender: TObject);
     procedure Edit7Enter(Sender: TObject);
+    procedure Edit7Exit(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
     procedure Edit8Enter(Sender: TObject);
+    procedure Edit8Exit(Sender: TObject);
     procedure Edit9Change(Sender: TObject);
     procedure Edit9Enter(Sender: TObject);
+    procedure Edit9Exit(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -319,6 +429,20 @@ type
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Memo1Change(Sender: TObject);
     procedure Memo1Enter(Sender: TObject);
+    procedure Memo1Exit(Sender: TObject);
+    procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem12Click(Sender: TObject);
+    procedure MenuItem13Click(Sender: TObject);
+    procedure MenuItem14Click(Sender: TObject);
+    procedure MenuItem15Click(Sender: TObject);
+    procedure MenuItem17Click(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
+    procedure MenuItem4Click(Sender: TObject);
+    procedure MenuItem5Click(Sender: TObject);
+    procedure MenuItem6Click(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
+    procedure MenuItem9Click(Sender: TObject);
     procedure Page10BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page10Resize(Sender: TObject);
@@ -355,7 +479,12 @@ type
     procedure Page9BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page9Resize(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure PopupMenu2Popup(Sender: TObject);
+    procedure PopupMenu3Popup(Sender: TObject);
     procedure ScrollBox1Resize(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
   private
     { private declarations }
   public
@@ -421,7 +550,11 @@ begin
                z:=PWideChar(zw);
                CreateProcess('peghelp.exe',z,nil,nil,false,0,nil,nil,nil,nil);
           end
-          else Error('Plik pomocy nie został zainstalowany!');
+          else Error(errorNoHelpFile);
+     end
+     else if uMsg=WM_USER then
+     begin
+          If wParam=1 then Form1.Timer2.Enabled:=true;
      end;
      Result:=CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam);
 end;
@@ -436,6 +569,18 @@ begin
           If((x.fdwFlags and 1)=0) then SipShowIM(SIPF_ON);
      end
      else SipShowIM(SIPF_ON);
+end;
+
+Procedure CloseSIPWhenNecessary;
+var x: SIPInfo;
+begin
+     system.FillChar(x,sizeof(x),0);
+     x.cbSize:=sizeof(x);
+     If SipGetInfo(Addr(x)) then
+     begin
+          If((x.fdwFlags and 1)=1) then SipShowIM(SIPF_OFF);
+     end
+     else SipShowIM(SIPF_OFF);
 end;
 {$ENDIF}
 
@@ -502,7 +647,7 @@ Function userOrServerChanged(): boolean;
 begin
      if userChanged or serverChanged then
      begin
-          if Question('Czy chcesz porzucić niezapisane zmiany?') then
+          if Question(questionUnsavedChanges,askUnsavedChanges) then
           begin
                userChanged:=false;
                serverChanged:=false;
@@ -561,38 +706,38 @@ end;
 Function whichCode(code: integer): utf8string;
 begin
      Case code of
-          -1024:Result:='Błędna odpowiedź serwera';
-          -768: Result:='Serwer tymczasowo wyłączony';
-          -512: Result:='Wewnętrzny błąd serwera';
-          -14:  Result:='Notatka już odblokowana';
-          -13:  Result:='Notatka już zablokowana';
-          -12:  Result:='Notatka jest zablokowana';
-          -11:  Result:='Błąd usuwania użytkownika';
-          -10:  Result:='Użytkownik nie istnieje';
-          -9:   Result:='Notatka nie istnieje';
-          -8:   Result:='Brak wymaganych informacji';
-          -7:   Result:='Użytkownik jest zablokowany';
-          -6:   Result:='Nieprawidłowe dane logowania';
-          -5:   Result:='Nieznane polecenie';
-          -4:   Result:='Brak danych logowania';
-          -3:   Result:='Wybrana nazwa użytkownika jest zajęta';
-          -2:   Result:='Brak użytecznych informacji w żądaniu';
-          -1:   Result:='Nieprawidłowy typ żądania';
-          0:    Result:='OK';
-          1:    Result:='Pomyślnie utworzono użytkownika';
-          2:    Result:='Pomyślnie zaktualizowano użytkownika';
-          3:    Result:='Pomyślnie usunięto użytkownika';
-          4:    Result:='Pomyślnie odebrano listę notatek';
-          5:    Result:='Pomyślnie odebrano notatkę';
-          6:    Result:='Pomyślnie utworzono notatkę';
-          7:    Result:='Pomyślnie zaktualizowano notatkę';
-          8:    Result:='Pomyślnie usunięto notatkę';
-          9:    Result:='Pomyślnie odebrano informacje o użytkowniku';
-          10:   Result:='Pomyślnie zablokowano notatkę';
-          11:   Result:='Pomyślnie odblokowano notatkę';
-          1024: Result:='Pomyślnie zmieniono serwer';
+          getError:                Result:=errorWrongAnswer;
+          serviceDisabled:         Result:=errorServerShutdown;
+          serverError:             Result:=errorInternalServer;
+          noteAlreadyUnlocked:     Result:=errorNoteAlreadyUnlocked;
+          noteAlreadyLocked:       Result:=errorNoteAlreadyLocked;
+          noteLocked:              Result:=errorNoteLocked;
+          userRemoveError:         Result:=errorUserDelete;
+          userNotExist:            Result:=errorWrongUser;
+          noteNotExist:            Result:=errorWrongNote;
+          noNecessaryInfo:         Result:=errorNoNeededData;
+          userDeactivated:         Result:=errorUserLocked;
+          loginIncorrect:          Result:=errorWrongCredentials;
+          unknownAction:           Result:=errorWrongCommand;
+          noCredentials:           Result:=errorNoCredentials;
+          userExists:              Result:=errorUsernameTaken;
+          noUsableInfoInPOST:      Result:=errorNoUsableData;
+          invalidRequest:          Result:=errorWrongRequest;
+          OK:                      Result:=infoOK;
+          userCreated:             Result:=infoUserCreated;
+          userUpdated:             Result:=infoUserUpdated;
+          userRemoved:             Result:=infoUserDeleted;
+          listSuccessful:          Result:=infoNoteListGot;
+          noteGetSuccessful:       Result:=infoNoteRetrieved;
+          noteCreateSuccessful:    Result:=infoNoteCreated;
+          noteUpdateSuccessful:    Result:=infoNoteUpdated;
+          noteDeleteSuccessful:    Result:=infoNoteDeleted;
+          userInfoGetSuccessful:   Result:=infoUserInfoGot;
+          noteLockSuccessful:      Result:=infoNoteLocked;
+          noteUnlockSuccessful:    Result:=infoNoteUnlocked;
+          serverChangedSuccessful: Result:=infoServerChanged;
      else
-         Result:='Nieznany kod odpowiedzi serwera';
+         Result:=errorUnknownCode;
      end;
 end;
 
@@ -663,7 +808,7 @@ begin
         begin
              obj.id:=jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('id').AsInteger;
              {obj.}name:=jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('subject').AsString;
-             { obj.lastMod:=StrToDateTime(jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('last_modified').AsString); }
+             obj.lastMod:=StrToDateTime(jData.FindPath('answer').FindPath('notes_summary['+IntToStr(x)+']').FindPath('last_modified').AsString);
              ListBox.AddItem({obj.}name,nil);
              list[x]:=obj;
         end;
@@ -750,6 +895,13 @@ begin
      Form1.ImageList1.StretchDraw(Form1.Image1.Canvas,imgCode,Form1.Image1.ClientRect);
 end;
 
+Procedure bringToFront;
+begin
+     Application.Minimize;
+     Application.Restore;
+     Application.BringToFront;
+end;
+
 { Form elements }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -757,6 +909,7 @@ var version: word;
     aes:     TSynaAes;
 begin
      FormSize:=Form1.Height;
+     Form1.Caption:='Noter Client';
      {$IFDEF LCLWinCE}
      PrevWndProc:=Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
      {$ENDIF}
@@ -765,6 +918,10 @@ begin
      userAgent:='Noter Client/1.0 (Windows CE OS '+IntToStr(Lo(version))+'.'+IntToStr(Hi(version))+')';
      {$ELSE}
      userAgent:='Noter Client/1.0 (Windows OS '+IntToStr(Lo(version))+'.'+IntToStr(Hi(version))+')';
+     {$ENDIF}
+     {$IFNDEF LCLWinCE}
+     Edit6.PopupMenu:=nil;
+     Memo1.PopupMenu:=nil;
      {$ENDIF}
      lastCode:=emptyImage;
      settingsLoaded:=false;
@@ -813,7 +970,7 @@ begin
      end
      else
      begin
-          Error('Musisz wypełnić widoczne pola.');
+          Error(errorFillForms);
      end;
 end;
 
@@ -824,7 +981,7 @@ var data: utf8string;
 begin
      If Length(Edit10.Text)>0 then
      begin
-          If Question('Czy na pewno chcesz usunąć swoje konto?'#13#10'Ten proces jest nieodwracalny!') then
+          If Question(questionDeleteAccount,askDeleteAccount) then
           begin
                data:=Post('remove',username,Edit10.Text);
                res:=GetAnswerInfo(data,atta);
@@ -870,7 +1027,7 @@ begin
                     Label25.Enabled:=false;
                     Label25.Visible:=false;
                     CheckBox2.Checked:=true;
-                    Button12.Caption:='Dodaj';
+                    Button12.Caption:=buttonAdd;
                     selectedNoteIndex:=-1;
                     newSize:=false;
                     Notebook1.Height:=Form1.Height;
@@ -884,7 +1041,7 @@ begin
      end
      else
      begin
-          Error('Aby usunąć konto, musisz podać swoje hasło.');
+          Error(errorProvidePassword);
      end;
 end;
 
@@ -900,7 +1057,7 @@ begin
      CanClose:=true;
      If noteChanged then
      begin
-          CanClose:=Question('Czy chcesz porzucić niezapisane zmiany?');
+          CanClose:=Question(questionUnsavedChanges,askUnsavedChanges);
      end;
      If CanClose then
      begin
@@ -908,7 +1065,7 @@ begin
           Memo1.Clear;
           noteChanged:=false;
           CheckBox2.Checked:=true;
-          Button12.Caption:='Dodaj';
+          Button12.Caption:=buttonAdd;
           tempNote.id:=0;
           tempNote.added:=0;
           tempNote.lastMod:=0;
@@ -919,7 +1076,6 @@ begin
           tempNote.entry:='';
           changeIconAndLastCode(emptyImage);
           If newIDSet then selectedNoteIndex:=0;
-          ListBox1.ItemIndex:=selectedNoteIndex;
           Notebook1.PageIndex:=2;
      end;
 end;
@@ -934,7 +1090,7 @@ begin
      CanClose:=true;
      If noteChanged or userChanged then
      begin
-          CanClose:=Question('Czy chcesz porzucić niezapisane zmiany?');
+          CanClose:=Question(questionUnsavedChanges,askUnsavedChanges);
      end;
      If CanClose then
      begin
@@ -948,7 +1104,7 @@ begin
           begin
                If res=loginIncorrect then
                begin
-                    If Question('Ponieważ serwer został zmieniony, obecne dane logowania są niepoprawne. Czy chcesz je zmienić?') then
+                    If Question(questionChangeCredentials,askChangeCredentials) then
                     begin
                          ini.WriteString('server','address',server);
                          ini.WriteString('server','share',share);
@@ -992,7 +1148,7 @@ begin
                          Label25.Enabled:=false;
                          Label25.Visible:=false;
                          CheckBox2.Checked:=true;
-                         Button12.Caption:='Dodaj';
+                         Button12.Caption:=buttonAdd;
                          selectedNoteIndex:=-1;
                          newSize:=false;
                          Notebook1.Height:=Form1.Height;
@@ -1005,7 +1161,7 @@ begin
                          Edit11.Text:=server;
                          Edit12.Text:=share;
                          serverChanged:=false;
-                         Information('Poprzednie dane serwera zostały przywrócone');
+                         Information(informationPreviousServer);
                     end;
                end
                else
@@ -1044,7 +1200,7 @@ begin
                     userChanged:=false;
                     noteChanged:=false;
                     CheckBox2.Checked:=true;
-                    Button12.Caption:='Dodaj';
+                    Button12.Caption:=buttonAdd;
                     selectedNoteIndex:=-1;
                     settingsLoaded:=true;
                     Notebook1.PageIndex:=1;
@@ -1081,7 +1237,7 @@ begin
           If res=noteUnlockSuccessful then
           begin
                tempNote.locked:=false;
-               Button26.Caption:='Zablokuj';
+               Button26.Caption:=buttonLock;
                Button13.Enabled:=true;
           end
           else if res<OK then
@@ -1096,7 +1252,7 @@ begin
           If res=noteLockSuccessful then
           begin
                tempNote.locked:=true;
-               Button26.Caption:='Odblokuj';
+               Button26.Caption:=buttonUnlock;
                Button13.Enabled:=false;
           end
           else if res<OK then
@@ -1159,7 +1315,7 @@ begin
           end
           else
           begin
-               If Question('Czy na pewno chcesz zaktualizować tą notatkę?',false) then
+               If Question(questionUpdateNote,askUpdateNote) then
                begin
                     if newIDSet then data:=Post('update',username,password,Edit6.Text,Memo1.Lines.Text,'',newID)
                        else data:=Post('update',username,password,Edit6.Text,Memo1.Lines.Text,'',elements[selectedNoteIndex].id);
@@ -1189,7 +1345,7 @@ begin
      end
      else
      begin
-          Error('Musisz wypełnić widoczne pola.');
+          Error(errorFillForms);
      end;
 end;
 
@@ -1202,9 +1358,9 @@ begin
      CanClose:=true;
      If noteChanged or userChanged or serverChanged then
      begin
-          CanClose:=Question('Czy chcesz porzucić niezapisane zmiany?');
+          CanClose:=Question(questionUnsavedChanges,askUnsavedChanges);
      end;
-     If ((CanClose) and (Question('Czy na pewno chcesz usunąć tą notatkę?'))) then
+     If ((CanClose) and (Question(questionDeleteNote,askDeleteNote))) then
      begin
           If newIDSet then noteID:=newID
              else noteID:=elements[selectedNoteIndex].id;
@@ -1225,9 +1381,8 @@ begin
                Memo1.Clear;
                noteChanged:=false;
                selectedNoteIndex:=-1;
-               ListBox1.ItemIndex:=selectedNoteIndex;
                CheckBox2.Checked:=true;
-               Button12.Caption:='Dodaj';
+               Button12.Caption:=buttonAdd;
                Notebook1.PageIndex:=2;
           end
           else if res<OK then
@@ -1258,11 +1413,11 @@ begin
      CanClose:=true;
      If noteChanged or userChanged or serverChanged then
      begin
-          CanClose:=Question('Czy chcesz porzucić niezapisane zmiany?');
+          CanClose:=Question(questionUnsavedChanges,askUnsavedChanges);
      end;
      If CanClose then
      begin
-          If Question('Czy na pewno chcesz się wylogować?') then
+          If Question(questionWantLogout,askWantLogout) then
           begin
                Edit3.Text:='';
                Edit4.Text:='';
@@ -1302,7 +1457,7 @@ begin
                Label25.Enabled:=false;
                Label25.Visible:=false;
                CheckBox2.Checked:=true;
-               Button12.Caption:='Dodaj';
+               Button12.Caption:=buttonAdd;
                selectedNoteIndex:=-1;
                newSize:=false;
                Notebook1.Height:=Form1.Height;
@@ -1340,24 +1495,18 @@ begin
           end
           else
           begin
-               Error('Hasła nie są takie same!');
+               Error(errorPasswordNotMatching);
           end;
      end
      else
      begin
-          Error('Musisz wypełnić widoczne pola.');
+          Error(errorFillForms);
      end;
 end;
 
 procedure TForm1.Button19Click(Sender: TObject);
 begin
-     if userOrServerChanged() then
-     begin
-          Edit7.Text:='';
-          Edit8.Text:='';
-          Edit9.Text:='';
-          Notebook1.PageIndex:=6;
-     end;
+     if userOrServerChanged() then Notebook1.PageIndex:=6;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -1373,7 +1522,7 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 begin
      if Edit4.Text=Edit5.Text then Notebook1.PageIndex:=1
-        else Error('Hasła nie są takie same!');
+        else Error(errorPasswordNotMatching);
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -1409,15 +1558,23 @@ begin
      end
      else
      begin
-          If CheckBox2.Checked then Button12.Caption:='Dodaj'
-             else Button12.Caption:='Zaktualizuj';
+          If CheckBox2.Checked then Button12.Caption:=buttonAdd
+             else Button12.Caption:=buttonUpdate;
      end;
 end;
 
 procedure TForm1.Edit10Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit10Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1429,7 +1586,15 @@ end;
 procedure TForm1.Edit11Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit11Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1441,42 +1606,90 @@ end;
 procedure TForm1.Edit12Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit12Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
 procedure TForm1.Edit1Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit1Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
 procedure TForm1.Edit2Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit2Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
 procedure TForm1.Edit3Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit3Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
 procedure TForm1.Edit4Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit4Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
 procedure TForm1.Edit5Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit5Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1488,7 +1701,15 @@ end;
 procedure TForm1.Edit6Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit6Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1500,7 +1721,15 @@ end;
 procedure TForm1.Edit7Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit7Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1512,7 +1741,15 @@ end;
 procedure TForm1.Edit8Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit8Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1524,7 +1761,15 @@ end;
 procedure TForm1.Edit9Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Edit9Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
      {$ENDIF}
 end;
 
@@ -1537,7 +1782,7 @@ procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
      If noteChanged or userChanged or serverChanged then
      begin
-          CanClose:=Question('Czy chcesz porzucić niezapisane zmiany?');
+          CanClose:=Question(questionUnsavedChanges,askUnsavedChanges);
      end;
 end;
 
@@ -1636,7 +1881,7 @@ begin
           begin
                If noteChanged then
                begin
-                    If Question('Czy chcesz porzucić niezapisane zmiany?') then
+                    If Question(questionUnsavedChanges,askUnsavedChanges) then
                     begin
                          selectedNoteIndex:=ListBox1.ItemIndex;
                          load:=true;
@@ -1689,8 +1934,121 @@ end;
 procedure TForm1.Memo1Enter(Sender: TObject);
 begin
      {$IFDEF LCLWinCE}
+     Timer1.Enabled:=false;
      OpenSIPWhenNecessary;
      {$ENDIF}
+end;
+
+procedure TForm1.Memo1Exit(Sender: TObject);
+begin
+     {$IFDEF LCLWinCE}
+     Timer1.Enabled:=true;
+     {$ENDIF}
+end;
+
+procedure TForm1.MenuItem10Click(Sender: TObject);
+begin
+     Memo1.Undo;
+end;
+
+procedure TForm1.MenuItem12Click(Sender: TObject);
+begin
+     Memo1.CutToClipboard;
+end;
+
+procedure TForm1.MenuItem13Click(Sender: TObject);
+begin
+     Memo1.CopyToClipboard;
+end;
+
+procedure TForm1.MenuItem14Click(Sender: TObject);
+begin
+     Memo1.PasteFromClipboard;
+end;
+
+procedure TForm1.MenuItem15Click(Sender: TObject);
+var temp: utf8string;
+    sel:  integer;
+begin
+     temp:=Memo1.Text;
+     sel:=Memo1.SelStart;
+     Delete(temp,Memo1.SelStart+1,Memo1.SelLength);
+     Memo1.Text:=temp;
+     Memo1.SelStart:=sel;
+end;
+
+procedure TForm1.MenuItem17Click(Sender: TObject);
+begin
+     Memo1.SelectAll;
+end;
+
+procedure TForm1.MenuItem1Click(Sender: TObject);
+var data: utf8string;
+    res:  integer;
+    atta: att;
+begin
+     If Question(questionDeleteNote,askDeleteNote) then
+     begin
+          data:=Post('delete',username,password,'','','',elements[ListBox1.ItemIndex].id);
+          res:=getAnswerInfo(data,atta);
+          if res=noteDeleteSuccessful then
+          begin
+               selectedNoteIndex:=-1;
+               If tempNote.id=elements[ListBox1.ItemIndex].id then
+               begin
+                    newIDSet:=true;
+                    tempNote.id:=0;
+                    tempNote.added:=0;
+                    tempNote.lastMod:=0;
+                    tempNote.locked:=false;
+                    tempNote.UA:='';
+                    tempNote.lastUA:='';
+                    CheckBox2.Checked:=true;
+                    Button12.Caption:=buttonAdd;
+               end;
+               Form1.Page3BeforeShow(Sender,nil,0);
+          end
+          else if res<OK then
+          begin
+               Error(whichCode(res));
+          end;
+     end;
+end;
+
+procedure TForm1.MenuItem2Click(Sender: TObject);
+begin
+     Edit6.Undo;
+end;
+
+procedure TForm1.MenuItem4Click(Sender: TObject);
+begin
+     Edit6.CutToClipboard;
+end;
+
+procedure TForm1.MenuItem5Click(Sender: TObject);
+begin
+     Edit6.CopyToClipboard;
+end;
+
+procedure TForm1.MenuItem6Click(Sender: TObject);
+begin
+     Edit6.PasteFromClipboard;
+end;
+
+procedure TForm1.MenuItem7Click(Sender: TObject);
+var temp:  utf8string;
+    sel:   integer;
+begin
+     temp:=Edit6.Text;
+     sel:=Edit6.SelStart;
+     Delete(temp,Edit6.SelStart+1,Edit6.SelLength);
+     Edit6.Text:=temp;
+     Edit6.SelStart:=sel;
+end;
+
+procedure TForm1.MenuItem9Click(Sender: TObject);
+begin
+     Edit6.SelectAll;
 end;
 
 procedure TForm1.Page10BeforeShow(ASender: TObject; ANewPage: TPage;
@@ -1763,18 +2121,18 @@ begin
      if CheckBox1.Checked then data:=Post('register',username,password)
         else data:=Post('info',username,password);
      res:=getAnswerInfo(data,atta);
-     if res=getError then Label8.Caption:='Sprawdzanie połączenia... BŁĄD'
-        else Label8.Caption:='Sprawdzanie połączenia... OK';
+     if res=getError then Label8.Caption:=labelConnectionCheckError
+        else Label8.Caption:=labelConnectionCheckOK;
      if res>=OK then
      begin
           Button3.Enabled:=true;
           Label10.Caption:='';
           if res=userCreated then
           begin
-               Label2.Caption:='Pomyślnie zarejestrowano! :)';
+               Label2.Caption:=labelRegisteredSuccessfully;
                CheckBox1.Checked:=false;
           end
-          else Label2.Caption:='Pomyślnie zalogowano! :)';
+          else Label2.Caption:=labelLoggedInSuccessfully;
           Label2.Font.Color:=clGreen;
           if(settingsLoaded) then
           begin
@@ -1794,8 +2152,8 @@ begin
      begin
           Button3.Enabled:=false;
           Label10.Caption:=whichCode(res)+'.';
-          if CheckBox1.Checked then Label2.Caption:='Nie udało się zarejestrować. :('
-             else Label2.Caption:='Nie udało się zalogować. :(';
+          if CheckBox1.Checked then Label2.Caption:=labelRegistrationError
+             else Label2.Caption:=labelLoggingInError;
           if(settingsLoaded) then settingsLoaded:=false;
           Label2.Font.Color:=clRed;
      end;
@@ -1923,8 +2281,8 @@ begin
              else Button13.Enabled:=false;
           Button26.Enabled:=true;
      end;
-     If tempNote.locked then Button26.Caption:='Odblokuj'
-        else Button26.Caption:='Zablokuj';
+     If tempNote.locked then Button26.Caption:=buttonUnlock
+        else Button26.Caption:=buttonLock;
      If tempNote.added=0 then Label18.Caption:='-'
         else Label18.Caption:=DateTimeToStr(tempNote.added);
      If tempNote.lastMod=0 then Label20.Caption:='-'
@@ -2033,6 +2391,53 @@ begin
      Edit9.Width:=Page9.Width-16;
 end;
 
+procedure TForm1.PopupMenu1Popup(Sender: TObject);
+begin
+     MenuItem1.Enabled:=not (ListBox1.ItemIndex=-1);
+     If MenuItem1.Enabled then
+     begin
+          MenuItem18.Caption:=labelID+IntToStr(elements[ListBox1.ItemIndex].id);
+          MenuItem20.Caption:=labelDate+DateTimeToStr(elements[ListBox1.ItemIndex].lastMod);
+          MenuItem18.Visible:=true;
+          MenuItem19.Visible:=true;
+          MenuItem20.Visible:=true;
+     end
+     else
+     begin
+          MenuItem18.Visible:=false;
+          MenuItem19.Visible:=false;
+          MenuItem20.Visible:=false;
+     end;
+end;
+
+procedure TForm1.PopupMenu2Popup(Sender: TObject);
+begin
+     { Undo }
+     MenuItem2.Enabled:=Edit6.CanUndo;
+     { Cut, Copy, Delete }
+     MenuItem4.Enabled:=Edit6.SelLength>0;
+     MenuItem5.Enabled:=Edit6.SelLength>0;
+     MenuItem7.Enabled:=Edit6.SelLength>0;
+     { Paste }
+     MenuItem6.Enabled:=Length(Clipboard.AsText)>0;
+     { Select all }
+     MenuItem9.Enabled:=not ((Length(Edit6.Text)=0) or (Edit6.SelLength=Length(Edit6.Text)));
+end;
+
+procedure TForm1.PopupMenu3Popup(Sender: TObject);
+begin
+     { Undo }
+     MenuItem10.Enabled:=Memo1.CanUndo;
+     { Cut, Copy, Delete }
+     MenuItem12.Enabled:=Memo1.SelLength>0;
+     MenuItem13.Enabled:=Memo1.SelLength>0;
+     MenuItem15.Enabled:=Memo1.SelLength>0;
+     { Paste }
+     MenuItem14.Enabled:=Length(Clipboard.AsText)>0;
+     { Select all }
+     MenuItem17.Enabled:=not ((Length(Memo1.Text)=0) or (Memo1.SelLength=Length(Memo1.Text)));
+end;
+
 procedure TForm1.ScrollBox1Resize(Sender: TObject);
 begin
      Label59.AutoSize:=false;
@@ -2057,6 +2462,20 @@ begin
      Label62.Top:=Label61.Top+Label61.Height+24;
      Label62.AutoSize:=true;
      ScrollBox1.VertScrollBar.Range:=Label62.Top+Label62.Height+8-ScrollBox1.Height;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+begin
+     Timer1.Enabled:=false;
+     {$IFDEF LCLWinCE}
+     CloseSIPWhenNecessary;
+     {$ENDIF}
+end;
+
+procedure TForm1.Timer2Timer(Sender: TObject);
+begin
+     Timer2.Enabled:=false;
+     bringToFront;
 end;
 
 end.

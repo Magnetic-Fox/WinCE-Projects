@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 267
   Height = 268
-  Top = 134
+  Top = 135
   Width = 240
   ActiveControl = Notebook1
-  Caption = 'Noter Client'
+  Caption = 'Noter Client 1.0'
   ClientHeight = 268
   ClientWidth = 240
   Color = clWhite
@@ -21,7 +21,7 @@ object Form1: TForm1
     Height = 252
     Top = 0
     Width = 240
-    PageIndex = 4
+    PageIndex = 2
     TabOrder = 0
     TabStop = True
     object Page1: TPage
@@ -64,6 +64,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnEnter = Edit4Enter
+        OnExit = Edit4Exit
         PasswordChar = '*'
         TabOrder = 3
       end
@@ -84,6 +85,7 @@ object Form1: TForm1
         Top = 160
         Width = 224
         OnEnter = Edit3Enter
+        OnExit = Edit3Exit
         TabOrder = 2
       end
       object Label5: TLabel
@@ -103,6 +105,7 @@ object Form1: TForm1
         Top = 112
         Width = 224
         OnEnter = Edit2Enter
+        OnExit = Edit2Exit
         TabOrder = 1
       end
       object Label4: TLabel
@@ -122,6 +125,7 @@ object Form1: TForm1
         Top = 64
         Width = 224
         OnEnter = Edit1Enter
+        OnExit = Edit1Exit
         TabOrder = 0
       end
       object Label3: TLabel
@@ -226,6 +230,7 @@ object Form1: TForm1
         Width = 240
         ItemHeight = 0
         OnSelectionChange = ListBox1SelectionChange
+        PopupMenu = PopupMenu1
         TabOrder = 0
       end
       object Label64: TLabel
@@ -276,6 +281,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnEnter = Edit5Enter
+        OnExit = Edit5Exit
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -346,8 +352,12 @@ object Form1: TForm1
         Height = 21
         Top = 16
         Width = 240
+        AutoSelect = False
+        HideSelection = False
         OnChange = Edit6Change
         OnEnter = Edit6Enter
+        OnExit = Edit6Exit
+        PopupMenu = PopupMenu2
         TabOrder = 0
       end
       object Label14: TLabel
@@ -366,8 +376,11 @@ object Form1: TForm1
         Height = 180
         Top = 56
         Width = 240
+        HideSelection = False
         OnChange = Memo1Change
         OnEnter = Memo1Enter
+        OnExit = Memo1Exit
+        PopupMenu = PopupMenu3
         ScrollBars = ssAutoVertical
         TabOrder = 1
         WantTabs = True
@@ -447,7 +460,7 @@ object Form1: TForm1
         WordWrap = True
       end
       object Label19: TLabel
-        Left = 1
+        Left = 0
         Height = 13
         Top = 64
         Width = 153
@@ -845,6 +858,7 @@ object Form1: TForm1
         EchoMode = emPassword
         OnChange = Edit7Change
         OnEnter = Edit7Enter
+        OnExit = Edit7Exit
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -867,6 +881,7 @@ object Form1: TForm1
         EchoMode = emPassword
         OnChange = Edit8Change
         OnEnter = Edit8Enter
+        OnExit = Edit8Exit
         PasswordChar = '*'
         TabOrder = 1
       end
@@ -889,6 +904,7 @@ object Form1: TForm1
         EchoMode = emPassword
         OnChange = Edit9Change
         OnEnter = Edit9Enter
+        OnExit = Edit9Exit
         PasswordChar = '*'
         TabOrder = 2
       end
@@ -943,6 +959,7 @@ object Form1: TForm1
         Width = 224
         EchoMode = emPassword
         OnEnter = Edit10Enter
+        OnExit = Edit10Exit
         PasswordChar = '*'
         TabOrder = 0
       end
@@ -1011,6 +1028,7 @@ object Form1: TForm1
         Width = 224
         OnChange = Edit11Change
         OnEnter = Edit11Enter
+        OnExit = Edit11Exit
         TabOrder = 0
       end
       object Label51: TLabel
@@ -1031,6 +1049,7 @@ object Form1: TForm1
         Width = 224
         OnChange = Edit12Change
         OnEnter = Edit12Enter
+        OnExit = Edit12Exit
         TabOrder = 1
       end
       object Button23: TButton
@@ -1226,7 +1245,7 @@ object Form1: TForm1
     Width = 134
     AutoSize = False
     BidiMode = bdRightToLeft
-    Caption = '©2021 Magnetic-Fox'
+    Caption = '©2022 Magnetic-Fox'
     Enabled = False
     ParentBidiMode = False
     ParentColor = False
@@ -1403,5 +1422,112 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFF
     }
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 24
+    top = 24
+    object MenuItem18: TMenuItem
+      Caption = 'ID: 0'
+      Enabled = False
+      Visible = False
+    end
+    object MenuItem20: TMenuItem
+      Caption = 'Data:'
+      Enabled = False
+      Visible = False
+    end
+    object MenuItem19: TMenuItem
+      Caption = '-'
+      Visible = False
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Usuń'
+      OnClick = MenuItem1Click
+    end
+  end
+  object PopupMenu2: TPopupMenu
+    OnPopup = PopupMenu2Popup
+    left = 88
+    top = 24
+    object MenuItem2: TMenuItem
+      Caption = 'Cofnij'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'Wytnij'
+      OnClick = MenuItem4Click
+    end
+    object MenuItem5: TMenuItem
+      Caption = 'Kopiuj'
+      OnClick = MenuItem5Click
+    end
+    object MenuItem6: TMenuItem
+      Caption = 'Wklej'
+      OnClick = MenuItem6Click
+    end
+    object MenuItem7: TMenuItem
+      Caption = 'Usuń'
+      OnClick = MenuItem7Click
+    end
+    object MenuItem8: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem9: TMenuItem
+      Caption = 'Zaznacz wszystko'
+      OnClick = MenuItem9Click
+    end
+  end
+  object PopupMenu3: TPopupMenu
+    OnPopup = PopupMenu3Popup
+    left = 24
+    top = 72
+    object MenuItem10: TMenuItem
+      Caption = 'Cofnij'
+      OnClick = MenuItem10Click
+    end
+    object MenuItem11: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem12: TMenuItem
+      Caption = 'Wytnij'
+      OnClick = MenuItem12Click
+    end
+    object MenuItem13: TMenuItem
+      Caption = 'Kopiuj'
+      OnClick = MenuItem13Click
+    end
+    object MenuItem14: TMenuItem
+      Caption = 'Wklej'
+      OnClick = MenuItem14Click
+    end
+    object MenuItem15: TMenuItem
+      Caption = 'Usuń'
+      OnClick = MenuItem15Click
+    end
+    object MenuItem16: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem17: TMenuItem
+      Caption = 'Zaznacz wszystko'
+      OnClick = MenuItem17Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    left = 88
+    top = 72
+  end
+  object Timer2: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = Timer2Timer
+    left = 192
+    top = 72
   end
 end
