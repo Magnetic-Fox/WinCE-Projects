@@ -631,6 +631,7 @@ var test: THTTPSend;
     res: utf8string;
 begin
      test:=THTTPSend.Create;
+     test.Timeout:=5000;
      test.MimeType:='application/x-www-form-urlencoded';
      test.Document.Clear;
      urldata:='action='+EncodeURL(action)
@@ -984,8 +985,8 @@ begin
      Form1.MenuItem9.Caption:=LoadResourceString(Lib,452);
      Form1.MenuItem17.Caption:=LoadResourceString(Lib,452);
      Form1.Label56.Caption:=LoadResourceString(Lib,453);
-     //Form1.Label59.Caption:=LoadResourceString(Lib,454,3900);
-     //Form1.Label60.Caption:=LoadResourceString(Lib,455);
+     Form1.Label59.Caption:=LoadResourceString(Lib,454,3900);
+     Form1.Label60.Caption:=LoadResourceString(Lib,455);
      Form1.Label61.Caption:=LoadResourceString(Lib,456);
      Form1.Label62.Caption:=LoadResourceString(Lib,457,1900);
 
