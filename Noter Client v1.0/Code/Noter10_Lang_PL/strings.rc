@@ -1,0 +1,263 @@
+/*
+
+Noter Client v1.0 String Table
+Polish
+
+Information:                         1xx
+Question:                            2xx
+Error:                               3xx
+Label:                               4xx
+Button:                              5xx
+
+*/
+
+// Information section
+
+#define INFO_PREVIOUSSERVER          101
+#define INFO_OK                      102
+#define INFO_USERCREATED             103
+#define INFO_USERUPDATED             104
+#define INFO_USERDELETED             105
+#define INFO_NOTELISTGOT             106
+#define INFO_NOTERETRIEVED           107
+#define INFO_NOTECREATED             108
+#define INFO_NOTEUPDATED             109
+#define INFO_NOTEDELETED             110
+#define INFO_USERINFOGOT             111
+#define INFO_NOTELOCKED              112
+#define INFO_NOTEUNLOCKED            113
+#define INFO_SERVERCHANGED           114
+
+// Question section
+
+#define QUESTION_UNSAVEDCHANGES      201
+#define QUESTION_DELETEACCOUNT       202
+#define QUESTION_CHANGECREDENTIALS   203
+#define QUESTION_UPDATENOTE          204
+#define QUESTION_DELETENOTE          205
+#define QUESTION_WANTLOGOUT          206
+
+// Error section
+
+#define ERROR_NOHELPFILE             301
+#define ERROR_FILLFORMS              302
+#define ERROR_PROVIDEPASSWORD        303
+#define ERROR_PASSWORDNOTMATCHING    304
+#define ERROR_WRONGANSWER            305
+#define ERROR_SERVERSHUTDOWN         306
+#define ERROR_INTERNALSERVER         307
+#define ERROR_NOTEALREADYUNLOCKED    308
+#define ERROR_NOTEALREADYLOCKED      309
+#define ERROR_NOTELOCKED             310
+#define ERROR_USERDELETE             311
+#define ERROR_WRONGUSER              312
+#define ERROR_WRONGNOTE              313
+#define ERROR_NONEEDEDDATA           314
+#define ERROR_USERLOCKED             315
+#define ERROR_WRONGCREDENTIALS       316
+#define ERROR_WRONGCOMMAND           317
+#define ERROR_NOCREDENTIALS          318
+#define ERROR_USERNAMETAKEN          319
+#define ERROR_NOUSABLEDATA           320
+#define ERROR_WRONGREQUEST           321
+#define ERROR_UNKNOWNCODE            322
+
+// Label section
+
+#define LABEL_CONNECTIONCHECKERROR   401
+#define LABEL_CONNECTIONCHECKOK      402
+#define LABEL_REGISTEREDSUCCESSFULLY 403
+#define LABEL_REGISTRATIONERROR      404
+#define LABEL_LOGGEDINSUCCESSFULLY   405
+#define LABEL_LOGGINGINERROR         406
+#define LABEL_ID                     407
+#define LABEL_DATE                   408
+#define LABEL_SERVERADDRESS          409
+#define LABEL_SHARE                  410
+#define LABEL_USERNAME               411
+#define LABEL_PASSWORD               412
+#define LABEL_REGISTER               413
+#define LABEL_CHECKINGCONNECTION     414
+#define LABEL_NOTES                  415
+#define LABEL_CONFIRMPASSWORD        416
+#define LABEL_REGISTRATION           417
+#define LABEL_TERMSACCEPT            418
+#define LABEL_SUBJECT                419
+#define LABEL_ENTRY                  420
+#define LABEL_NEWNOTE                421
+#define LABEL_NOTEID                 422
+#define LABEL_ADDDATE                423
+#define LABEL_LASTMODDATE            424
+#define LABEL_ADDEDUSING             425
+#define LABEL_CHANGEDUSING           426
+#define LABEL_USERID                 427
+#define LABEL_REGISTRATIONDATE       428
+#define LABEL_REGISTEREDUSING        429
+#define LABEL_USERLASTCHANGES        430
+#define LABEL_USERLASTCHANGEDUSING   431
+#define LABEL_SERVERNAME             432
+#define LABEL_TIMEZONE               433
+#define LABEL_SERVERVERSION          434
+#define LABEL_CHANGINGPASSWORD       435
+#define LABEL_CURRENTPASSWORD        436
+#define LABEL_NEWPASSWORD            437
+#define LABEL_CONFIRMNEWPASSWORD     438
+#define LABEL_ACCOUNTDELETION        439
+#define LABEL_DELETIONWARNING        440
+#define LABEL_SERVERCHANGING         441
+#define LABEL_VERSION                442
+#define LABEL_PROGRAMMER             443
+#define LABEL_CONTACT                444
+#define LABEL_PRODUCTIONTIME         445
+#define LABEL_INFORMATIONFORMNAME    446
+#define LABEL_DELETE                 447
+#define LABEL_UNDO                   448
+#define LABEL_CUT                    449
+#define LABEL_COPY                   450
+#define LABEL_PASTE                  451
+#define LABEL_SELECTALL              452
+#define LABEL_TERMS                  453
+#define LABEL_TERMSPART1             454
+#define LABEL_TERMSPART2             455
+#define LABEL_PRIVACYPOLICY          456
+#define LABEL_PRIVACYTEXT            457
+
+// Button section
+
+#define BUTTON_ADD                   501
+#define BUTTON_UPDATE                502
+#define BUTTON_LOCK                  503
+#define BUTTON_UNLOCK                504
+#define BUTTON_START                 505
+#define BUTTON_BACK                  506
+#define BUTTON_CONTINUE              507
+#define BUTTON_REGISTER              508
+#define BUTTON_DELETE                509
+#define BUTTON_CLOSE                 510
+#define BUTTON_CHANGEPASSWORD        511
+#define BUTTON_LOGOUT                512
+#define BUTTON_CHANGESERVER          513
+#define BUTTON_CANCEL                514
+
+// Main section
+
+STRINGTABLE
+{
+    INFO_PREVIOUSSERVER,             "Poprzednie dane serwera zostały przywrócone"
+    INFO_OK,                         "OK"
+    INFO_USERCREATED,                "Pomyślnie utworzono użytkownika"
+    INFO_USERUPDATED,                "Pomyślnie zaktualizowano użytkownika"
+    INFO_USERDELETED,                "Pomyślnie usunięto użytkownika"
+    INFO_NOTELISTGOT,                "Pomyślnie odebrano listę notatek"
+    INFO_NOTERETRIEVED,              "Pomyślnie odebrano notatkę"
+    INFO_NOTECREATED,                "Pomyślnie utworzono notatkę"
+    INFO_NOTEUPDATED,                "Pomyślnie zaktualizowano notatkę"
+    INFO_NOTEDELETED,                "Pomyślnie usunięto notatkę"
+    INFO_USERINFOGOT,                "Pomyślnie odebrano informacje o użytkowniku"
+    INFO_NOTELOCKED,                 "Pomyślnie zablokowano notatkę"
+    INFO_NOTEUNLOCKED,               "Pomyślnie odblokowano notatkę"
+    INFO_SERVERCHANGED,              "Pomyślnie zmieniono serwer"
+
+    QUESTION_UNSAVEDCHANGES,         "Czy chcesz porzucić niezapisane zmiany?"
+    QUESTION_DELETEACCOUNT,          "Czy na pewno chcesz usunąć swoje konto?\nTen proces jest nieodwracalny!"
+    QUESTION_CHANGECREDENTIALS,      "Ponieważ serwer został zmieniony, obecne dane logowania są niepoprawne. Czy chcesz je zmienić?"
+    QUESTION_UPDATENOTE,             "Czy na pewno chcesz zaktualizować tą notatkę?"
+    QUESTION_DELETENOTE,             "Czy na pewno chcesz usunąć tą notatkę?"
+    QUESTION_WANTLOGOUT,             "Czy na pewno chcesz się wylogować?"
+
+    ERROR_NOHELPFILE,                "Plik pomocy nie został zainstalowany!"
+    ERROR_FILLFORMS,                 "Musisz wypełnić widoczne pola."
+    ERROR_PROVIDEPASSWORD,           "Aby usunąć konto, musisz podać swoje hasło."
+    ERROR_PASSWORDNOTMATCHING,       "Hasła nie są takie same!"
+    ERROR_WRONGANSWER,               "Błędna odpowiedź serwera"
+    ERROR_SERVERSHUTDOWN,            "Serwer tymczasowo wyłączony"
+    ERROR_INTERNALSERVER,            "Wewnętrzny błąd serwera"
+    ERROR_NOTEALREADYUNLOCKED,       "Notatka już odblokowana"
+    ERROR_NOTEALREADYLOCKED,         "Notatka już zablokowana"
+    ERROR_NOTELOCKED,                "Notatka jest zablokowana"
+    ERROR_USERDELETE,                "Błąd usuwania użytkownika"
+    ERROR_WRONGUSER,                 "Użytkownik nie istnieje"
+    ERROR_WRONGNOTE,                 "Notatka nie istnieje"
+    ERROR_NONEEDEDDATA,              "Brak wymaganych informacji"
+    ERROR_USERLOCKED,                "Użytkownik jest zablokowany"
+    ERROR_WRONGCREDENTIALS,          "Nieprawidłowe dane logowania"
+    ERROR_WRONGCOMMAND,              "Nieznane polecenie"
+    ERROR_NOCREDENTIALS,             "Brak danych logowania"
+    ERROR_USERNAMETAKEN,             "Wybrana nazwa użytkownika jest zajęta"
+    ERROR_NOUSABLEDATA,              "Brak użytecznych informacji w żądaniu"
+    ERROR_WRONGREQUEST,              "Nieprawidłowy typ żądania"
+    ERROR_UNKNOWNCODE,               "Nieznany kod odpowiedzi serwera"
+
+    LABEL_CONNECTIONCHECKERROR,      "Sprawdzanie połączenia... BŁĄD"
+    LABEL_CONNECTIONCHECKOK,         "Sprawdzanie połączenia... OK"
+    LABEL_REGISTEREDSUCCESSFULLY,    "Pomyślnie zarejestrowano! :)"
+    LABEL_REGISTRATIONERROR,         "Nie udało się zarejestrować. :("
+    LABEL_LOGGEDINSUCCESSFULLY,      "Pomyślnie zalogowano! :)"
+    LABEL_LOGGINGINERROR,            "Nie udało się zalogować. :("
+    LABEL_ID,                        "ID: "
+    LABEL_DATE,                      "Data: "
+    LABEL_SERVERADDRESS,             "Adres serwera:"
+    LABEL_SHARE,                     "Udział:"
+    LABEL_USERNAME,                  "Nazwa użytkownika:"
+    LABEL_PASSWORD,                  "Hasło:"
+    LABEL_REGISTER,                  "Zarejestruj"
+    LABEL_CHECKINGCONNECTION,        "Sprawdzanie połączenia..."
+    LABEL_NOTES,                     "Notatki:"
+    LABEL_CONFIRMPASSWORD,           "Powtórz hasło:"
+    LABEL_REGISTRATION,              "Rejestracja w serwisie oznacza"
+    LABEL_TERMSACCEPT,               "akceptację regulaminu."
+    LABEL_SUBJECT,                   "Temat:"
+    LABEL_ENTRY,                     "Treść:"
+    LABEL_NEWNOTE,                   "Nowa notatka"
+    LABEL_NOTEID,                    "ID notatki:"
+    LABEL_ADDDATE,                   "Data dodania:"
+    LABEL_LASTMODDATE,               "Data ostatniej modyfikacji:"
+    LABEL_ADDEDUSING,                "Dodana przy pomocy:"
+    LABEL_CHANGEDUSING,              "Ostatnio zmieniona przy pomocy:"
+    LABEL_USERID,                    "ID użytkownika:"
+    LABEL_REGISTRATIONDATE,          "Data rejestracji:"
+    LABEL_REGISTEREDUSING,           "Zarejestrowano przy użyciu:"
+    LABEL_USERLASTCHANGES,           "Data ostatnich zmian:"
+    LABEL_USERLASTCHANGEDUSING,      "Ostatnio zmieniono przy użyciu:"
+    LABEL_SERVERNAME,                "Nazwa serwera:"
+    LABEL_TIMEZONE,                  "Strefa czasowa serwera:"
+    LABEL_SERVERVERSION,             "Wersja serwera:"
+    LABEL_CHANGINGPASSWORD,          "Zmiana hasła"
+    LABEL_CURRENTPASSWORD,           "Obecne hasło:"
+    LABEL_NEWPASSWORD,               "Nowe hasło:"
+    LABEL_CONFIRMNEWPASSWORD,        "Powtórz nowe hasło:"
+    LABEL_ACCOUNTDELETION,           "Usuwanie konta"
+    LABEL_DELETIONWARNING,           "UWAGA!!!\nUsunięcie konta użytkownika z serwisu jest procesem nieodwracalnym skutkującym bezpowrotnym usunięciem wszystkich notatek z serwera.\nJeżeli dobrze rozumiesz skutki powyższego działania i wciąż chcesz zlikwidować swoje konto - kliknij przycisk Usuń."
+    LABEL_SERVERCHANGING,            "Zmiana serwera"
+    LABEL_VERSION,                   "wersja 1.0 PL"
+    LABEL_PROGRAMMER,                "Programowanie, projektowanie, pomysł, testowanie:"
+    LABEL_CONTACT,                   "Kontakt:"
+    LABEL_PRODUCTIONTIME,            "Okres tworzenia:"
+    LABEL_INFORMATIONFORMNAME,       "Informacje o programie"
+    LABEL_DELETE,                    "Usuń"
+    LABEL_UNDO,                      "Cofnij"
+    LABEL_CUT,                       "Wytnij"
+    LABEL_COPY,                      "Kopiuj"
+    LABEL_PASTE,                     "Wklej"
+    LABEL_SELECTALL,                 "Zaznacz wszystko"
+    LABEL_TERMS,                     "Regulamin korzystania z usługi"
+    LABEL_TERMSPART1,                "1. Definicje\n\na) Serwer usługi, zwany dalej \"serwerem\", jest urządzeniem sieciowym przyjmującym żądania oraz odpowiadającym na nie;\nb) Aplikacja klienta, zwana dalej \"klientem\", jest prostym programem komputerowym, służącym komunikacją z serwerem;\nc) Noter, zwany dalej \"usługą\" lub \"Noter\", jest usługą sieciową uruchomioną na serwerze, która odpowiada za odbieranie i przetwarzanie żądań wysyłanych przez klienta oraz odpowiadanie na nie;\nd) Użytkownik, zwany dalej \"użytkownikiem\", jest osobą wykorzystującą usługę za pośrednictwem klienta do łączenia się z serwerem, zakładania konta, logowania się, zarządzania notatkami (dodawaniem, edycją, odczytywaniem lub usuwaniem) oraz zarządzania kontem użytkownika;\ne) Konto użytkownika, zwane dalej \"kontem użytkownika\", jest przestrzenią użytkownika, w której umożiwione zostało przechowywanie nieograniczonej ilości notatek składających się z tematu (tytułu) oraz treści (zawartości);\nf) Administrator, zwany dalej \"administratorem\", jest zarządcą serwera, z którym użytkownik będzie się łączył za pośrednictwem klienta.\n\n2. Usługa Noter\n\nNoter jest darmową usługą pozwalającą na przechowywanie notatek na serwerze sieciowym.\nUżytkownik uzyskuje dostęp do usługi za pomocą formularza rejestracyjnego dostępnego w kliencie (np. tej aplikacji).\nKliknięcie przycisku \"Zarejestruj\" jest równoznaczne z akceptacją niniejszego regulaminu.\nPo poprawnym zarejestrowaniu się, użytkownik otrzymuje konto użytkownika, które umożliwia korzystanie z usługi, w tym z klienta.\n\n3. Konto użytkownika\n\nKonto użytkownika jest przestrzenią użytkownika, w której umożiwione zostało przechowywanie nieograniczonej ilości notatek składających się z tematu (tytułu) oraz treści (zawartości).\nZezwala się na wykorzystywanie konta użytkownika wyłącznie w celach zgodnych z niniejszym regulaminem.\nWykorzystywanie konta niezgodnie z jego przeznaczeniem może poskutkować jego dezaktywacją przez administratora usługi.\n\n4. Wykorzystywanie i cel usługi Noter\n\nCelem usługi Noter jest zapewnienie prywatnego miejsca w sieci do przechowywania i zarządzania własnymi notatkami, do których można mieć dostęp z każdego urządzenia zgodnego z klientem.\n\n4.1. Dozwolony użytek usługi\n4.1.1. Tworzenie, edycja, odczytywanie oraz usuwanie notatek.\n4.1.2. Tworzenie konta, wykorzystywanie stworzonego konta, zmiana hasła oraz usuwanie konta.\n4.1.3. Normalne wykorzystywanie usługi, rozumiane jako wykorzystywanie klientów do usługi przez żywe osoby w sposób zrównoważony, tzn. nie powodujący szkody dla serwera (np. nadmiernego zakładania kont, czy wysyłania zbyt dużej liczby żądań na sekundę).\n\n4.2. Niedozwolone praktyki\n4.2.1. Nadmierne przeciążanie serwera poprzez wysyłanie liczby żądań większej niż jest to konieczne.\n4.2.2. Wysyłanie zbyt dużych pakietów do serwera powodujących jego przeciążenie.\n4.2.3. Wykorzystywanie usługi za pomocą zautomatyzowanych urządzeń i programów nie będących oficjalnie zatwierdzonymi klientami do usługi.\n4.2.4. Przeprowadzanie prób na serwerze, w szczególności próbujących spowodować niewłaściwe działanie serwera lub nielegalne pozyskanie prywatnych danych użytkowników."
+    LABEL_TERMSPART2,                "5. Zwolnienie z odpowiedzialności\n\nAdministrator zastrzega sobie prawo do wyłączenia usługi w dowolnym momencie bez poinformowania użytkowników o takim zamiarze.\nUsługa oraz klient zostały dostarczone \"w takiej formie, w jakiej są\" i zostały, w miarę możliwości, dokładnie sprawdzone na okoliczność występowania w nich dowolnych błędów. Możliwe jest jednak, że pozostały w nich defekty, które w żaden sposób nie objawiły się podczas testów. Wykorzystując usługę oraz klienta do niej zgadzasz się na powyższe warunki, działając WYŁĄCZNIE na własną odpowiedzialność.\nRegulamin usługi może ulec zmianie bez uprzedniego poinformowania.\n\n6. Prawa autorskie\n\nAutorem usługi oraz klienta jest Bartłomiej \"Magnetic-Fox\" Węgrzyn.\nNiedozwolona jest jakakolwiek forma deasemblacji dowolnej części usługi ani klienta.\nWszelkie prawa zastrzeżone!\n\nRegulamin sporządzono 12 listopada 2021 roku."
+    LABEL_PRIVACYPOLICY,             "Polityka prywatności"
+    LABEL_PRIVACYTEXT,               "Jak większość usług, Noter zbiera pewne dane o użytkowniku. Są to jednak wyłącznie dane przetwarzane zgodnie z prawem, tj. nazwa klienta łączącego się z serwerem (tzw. user-agent) oraz adres IP (w tym adres Proxy).\nSą to jedyne dane, które mogą być wykorzystane w ramach tzw. \"konieczności\", tzn. wyłącznie jeśli wystąpi taka potrzeba, np. jeśli użytkownik będzie wykorzystywał usługę niezgodnie z jej przeznaczeniem i konieczne będzie odpowiednie postępowanie w jego kierunku.\nNa ten moment przechowywane na serwerze notatki nie są szyfrowane w sposób \"end-to-end\", to znaczy kluczem prywatnym przechowywanym wyłącznie przez użytkownika. Funkcjonalność ta jest jednak zaplanowana dla przyszłych wersji usługi. Oznacza to, że na ten moment odczytanie przechowywanych na serwerze notatek jest możliwe. Administrator zapewnia, że nie będzie uzyskiwać dostępu do tych danych, ponieważ nie jest to konieczne w celu zapewnienia poprawnego działania usługi.\nAdministrator postara się dołożyć wszelkich starań, aby przechowywane na serwerze dane pozostały bezpieczne - na ten moment przechowywane są one na zaszyfrowanym dysku serwera.\n\nWyłączenie odpowiedzialności\n\nJak w większości przypadków, tak i w przypadku tej usługi nie jest możliwe przewidzenie każdej możliwej sytuacji.\nAdministrator dołoży wszelkich starań, aby serwer pozostał bezpieczny. Nie może jednak przewidzieć działań przestępców mogących próbować włamać się na serwer.\nAdministrator NIE PONOSI ODPOWIEDZIALNOŚCI za szkodliwe działania osób trzecich mogących ujawnić prywatne dane - użytkownik wykorzystuje usługę WYŁĄCZNIE na własną odpowiedzialność.\n\nPolitykę prywatności sporządzono 12 listopada 2021 roku."
+
+    BUTTON_ADD,                      "Dodaj"
+    BUTTON_UPDATE,                   "Zaktualizuj"
+    BUTTON_LOCK,                     "Zablokuj"
+    BUTTON_UNLOCK,                   "Odblokuj"
+    BUTTON_START,                    "Rozpocznij!"
+    BUTTON_BACK,                     "< Wróć"
+    BUTTON_CONTINUE,                 "Kontynuuj"
+    BUTTON_REGISTER,                 "Zarejestruj!"
+    BUTTON_DELETE,                   "Usuń"
+    BUTTON_CLOSE,                    "Zamknij"
+    BUTTON_CHANGEPASSWORD,           "Zmień hasło"
+    BUTTON_LOGOUT,                   "Wyloguj"
+    BUTTON_CHANGESERVER,             "Zmień serwer"
+    BUTTON_CANCEL,                   "Anuluj"
+}
