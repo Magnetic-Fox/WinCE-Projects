@@ -56,76 +56,13 @@ const noteLockSuccessful=          10;
 const noteUnlockSuccessful=        11;
 const serverChangedSuccessful=     1024;
 
-{ String table }
-const questionUnsavedChanges=      'Czy chcesz porzucić niezapisane zmiany?';
-const questionDeleteAccount=       'Czy na pewno chcesz usunąć swoje konto?'#13#10'Ten proces jest nieodwracalny!';
-const questionChangeCredentials=   'Ponieważ serwer został zmieniony, obecne dane logowania są niepoprawne. Czy chcesz je zmienić?';
-const questionUpdateNote=          'Czy na pewno chcesz zaktualizować tą notatkę?';
-const questionDeleteNote=          'Czy na pewno chcesz usunąć tą notatkę?';
-const questionWantLogout=          'Czy na pewno chcesz się wylogować?';
-
-const informationPreviousServer=   'Poprzednie dane serwera zostały przywrócone';
-
-const errorNoHelpFile=             'Plik pomocy nie został zainstalowany!';
-const errorFillForms=              'Musisz wypełnić widoczne pola.';
-const errorProvidePassword=        'Aby usunąć konto, musisz podać swoje hasło.';
-const errorPasswordNotMatching=    'Hasła nie są takie same!';
-
-const buttonAdd=	           'Dodaj';
-const buttonUpdate=	           'Zaktualizuj';
-const buttonLock=	           'Zablokuj';
-const buttonUnlock=	           'Odblokuj';
-
-const labelConnectionCheckError=   'Sprawdzanie połączenia... BŁĄD';
-const labelConnectionCheckOK=	   'Sprawdzanie połączenia... OK';
-const labelRegisteredSuccessfully= 'Pomyślnie zarejestrowano! :)';
-const labelRegistrationError=	   'Nie udało się zarejestrować. :(';
-const labelLoggedInSuccessfully=   'Pomyślnie zalogowano! :)';
-const labelLoggingInError=	   'Nie udało się zalogować. :(';
-const labelID=			   'ID: ';
-const labelDate=		   'Data: ';
-
-const errorWrongAnswer=            'Błędna odpowiedź serwera';
-const errorServerShutdown=         'Serwer tymczasowo wyłączony';
-const errorInternalServer=         'Wewnętrzny błąd serwera';
-const errorNoteAlreadyUnlocked=    'Notatka już odblokowana';
-const errorNoteAlreadyLocked=      'Notatka już zablokowana';
-const errorNoteLocked=             'Notatka jest zablokowana';
-const errorUserDelete=             'Błąd usuwania użytkownika';
-const errorWrongUser=              'Użytkownik nie istnieje';
-const errorWrongNote=              'Notatka nie istnieje';
-const errorNoNeededData=           'Brak wymaganych informacji';
-const errorUserLocked=             'Użytkownik jest zablokowany';
-const errorWrongCredentials=       'Nieprawidłowe dane logowania';
-const errorWrongCommand=           'Nieznane polecenie';
-const errorNoCredentials=          'Brak danych logowania';
-const errorUsernameTaken=          'Wybrana nazwa użytkownika jest zajęta';
-const errorNoUsableData=           'Brak użytecznych informacji w żądaniu';
-const errorWrongRequest=           'Nieprawidłowy typ żądania';
-const errorUnknownCode=            'Nieznany kod odpowiedzi serwera';
-
-const infoOK=                      'OK';
-
-const infoUserCreated=             'Pomyślnie utworzono użytkownika';
-const infoUserUpdated=             'Pomyślnie zaktualizowano użytkownika';
-const infoUserDeleted=             'Pomyślnie usunięto użytkownika';
-const infoNoteListGot=             'Pomyślnie odebrano listę notatek';
-const infoNoteRetrieved=           'Pomyślnie odebrano notatkę';
-const infoNoteCreated=             'Pomyślnie utworzono notatkę';
-const infoNoteUpdated=             'Pomyślnie zaktualizowano notatkę';
-const infoNoteDeleted=             'Pomyślnie usunięto notatkę';
-const infoUserInfoGot=             'Pomyślnie odebrano informacje o użytkowniku';
-const infoNoteLocked=              'Pomyślnie zablokowano notatkę';
-const infoNoteUnlocked=            'Pomyślnie odblokowano notatkę';
-const infoServerChanged=           'Pomyślnie zmieniono serwer';
-
 { Temporary booleans }
-const askUnsavedChanges=    true;
-const askDeleteAccount=     true;
-const askChangeCredentials= true;
-const askUpdateNote=        true;
-const askDeleteNote=        true;
-const askWantLogout=        true;
+const askUnsavedChanges=           true;
+const askDeleteAccount=            true;
+const askChangeCredentials=        true;
+const askUpdateNote=               true;
+const askDeleteNote=               true;
+const askWantLogout=               true;
 
 { ---------------------------------------------------------------------------- }
 
@@ -191,6 +128,8 @@ Function getServer(input: utf8string; var output: serverInfo): boolean;
 Function getNewID(input: utf8string; var newID: integer): boolean;
 Procedure changeIconAndLastCode(code: integer);
 Procedure bringToFront;
+Function LoadResourceString(var Lib: THandle; Index: longint; maxBuffer: longint = 1024): utf8string;
+Procedure LoadStringTable(var Lib: THandle);
 
 { ---------------------------------------------------------------------------- }
 
@@ -507,6 +446,19 @@ var Form1: TForm1;
     {$IFDEF LCLWinCE}
     PrevWndProc: WNDPROC;
     {$ENDIF}
+
+{ String variables }
+var informationPreviousServer, infoOK, infoUserCreated, infoUserUpdated, infoUserDeleted,
+    infoNoteListGot, infoNoteRetrieved, infoNoteCreated, infoNoteUpdated, infoNoteDeleted,
+    infoUserInfoGot, infoNoteLocked, infoNoteUnlocked, infoServerChanged, questionUnsavedChanges,
+    questionDeleteAccount, questionChangeCredentials, questionUpdateNote, questionDeleteNote,
+    questionWantLogout, errorNoHelpFile, errorFillForms, errorProvidePassword, errorPasswordNotMatching,
+    errorWrongAnswer, errorServerShutdown, errorInternalServer, errorNoteAlreadyUnlocked,
+    errorNoteAlreadyLocked, errorNoteLocked, errorUserDelete, errorWrongUser, errorWrongNote,
+    errorNoNeededData, errorUserLocked, errorWrongCredentials, errorWrongCommand, errorNoCredentials,
+    errorUsernameTaken, errorNoUsableData, errorWrongRequest, errorUnknownCode, labelConnectionCheckError,
+    labelConnectionCheckOK, labelRegisteredSuccessfully, labelRegistrationError, labelLoggedInSuccessfully,
+    labelLoggingInError, labelID, labelDate, buttonAdd, buttonUpdate, buttonLock, buttonUnlock: utf8string;
 
 implementation
 
@@ -902,14 +854,200 @@ begin
      Application.BringToFront;
 end;
 
+Function LoadResourceString(var Lib: THandle; Index: longint; maxBuffer: longint = 1024): utf8string;
+var temp: widestring;
+begin
+     SetLength(temp,maxBuffer);
+     SetLength(temp,LoadStringW(Lib,Index,Addr(temp[1]),Length(temp)));
+     Result:=temp;
+end;
+
+Procedure LoadStringTable(var Lib: THandle);
+begin
+     { Information }
+     informationPreviousServer:=LoadResourceString(Lib,101);
+     infoOK:=LoadResourceString(Lib,102);
+     infoUserCreated:=LoadResourceString(Lib,103);
+     infoUserUpdated:=LoadResourceString(Lib,104);
+     infoUserDeleted:=LoadResourceString(Lib,105);
+     infoNoteListGot:=LoadResourceString(Lib,106);
+     infoNoteRetrieved:=LoadResourceString(Lib,107);
+     infoNoteCreated:=LoadResourceString(Lib,108);
+     infoNoteUpdated:=LoadResourceString(Lib,109);
+     infoNoteDeleted:=LoadResourceString(Lib,110);
+     infoUserInfoGot:=LoadResourceString(Lib,111);
+     infoNoteLocked:=LoadResourceString(Lib,112);
+     infoNoteUnlocked:=LoadResourceString(Lib,113);
+     infoServerChanged:=LoadResourceString(Lib,114);
+
+     { Questions }
+     questionUnsavedChanges:=LoadResourceString(Lib,201);
+     questionDeleteAccount:=LoadResourceString(Lib,202);
+     questionChangeCredentials:=LoadResourceString(Lib,203);
+     questionUpdateNote:=LoadResourceString(Lib,204);
+     questionDeleteNote:=LoadResourceString(Lib,205);
+     questionWantLogout:=LoadResourceString(Lib,206);
+
+     { Errors }
+     errorNoHelpFile:=LoadResourceString(Lib,301);
+     errorFillForms:=LoadResourceString(Lib,302);
+     errorProvidePassword:=LoadResourceString(Lib,303);
+     errorPasswordNotMatching:=LoadResourceString(Lib,304);
+     errorWrongAnswer:=LoadResourceString(Lib,305);
+     errorServerShutdown:=LoadResourceString(Lib,306);
+     errorInternalServer:=LoadResourceString(Lib,307);
+     errorNoteAlreadyUnlocked:=LoadResourceString(Lib,308);
+     errorNoteAlreadyLocked:=LoadResourceString(Lib,309);
+     errorNoteLocked:=LoadResourceString(Lib,310);
+     errorUserDelete:=LoadResourceString(Lib,311);
+     errorWrongUser:=LoadResourceString(Lib,312);
+     errorWrongNote:=LoadResourceString(Lib,313);
+     errorNoNeededData:=LoadResourceString(Lib,314);
+     errorUserLocked:=LoadResourceString(Lib,315);
+     errorWrongCredentials:=LoadResourceString(Lib,316);
+     errorWrongCommand:=LoadResourceString(Lib,317);
+     errorNoCredentials:=LoadResourceString(Lib,318);
+     errorUsernameTaken:=LoadResourceString(Lib,319);
+     errorNoUsableData:=LoadResourceString(Lib,320);
+     errorWrongRequest:=LoadResourceString(Lib,321);
+     errorUnknownCode:=LoadResourceString(Lib,322);
+
+     { Labels }
+     labelConnectionCheckError:=LoadResourceString(Lib,401);
+     labelConnectionCheckOK:=LoadResourceString(Lib,402);
+     labelRegisteredSuccessfully:=LoadResourceString(Lib,403);
+     labelRegistrationError:=LoadResourceString(Lib,404);
+     labelLoggedInSuccessfully:=LoadResourceString(Lib,405);
+     labelLoggingInError:=LoadResourceString(Lib,406);
+     labelID:=LoadResourceString(Lib,407);
+     labelDate:=LoadResourceString(Lib,408);
+
+     Form1.Label3.Caption:=LoadResourceString(Lib,409);
+     Form1.Label4.Caption:=LoadResourceString(Lib,410);
+     Form1.Label5.Caption:=LoadResourceString(Lib,411);
+     Form1.Label6.Caption:=LoadResourceString(Lib,412);
+     Form1.CheckBox1.Caption:=LoadResourceString(Lib,413);
+     Form1.Label8.Caption:=LoadResourceString(Lib,414);
+     Form1.Label2.Caption:=LoadResourceString(Lib,405);
+     Form1.Label9.Caption:=LoadResourceString(Lib,415);
+     Form1.Label12.Caption:=LoadResourceString(Lib,416);
+     Form1.Label57.Caption:=LoadResourceString(Lib,417);
+     Form1.Label58.Caption:=LoadResourceString(Lib,418);
+     Form1.Label13.Caption:=LoadResourceString(Lib,419);
+     Form1.Label14.Caption:=LoadResourceString(Lib,420);
+     Form1.CheckBox2.Caption:=LoadResourceString(Lib,421);
+     Form1.Label15.Caption:=LoadResourceString(Lib,422);
+     Form1.Label17.Caption:=LoadResourceString(Lib,423);
+     Form1.Label19.Caption:=LoadResourceString(Lib,424);
+     Form1.Label21.Caption:=LoadResourceString(Lib,425);
+     Form1.Label23.Caption:=LoadResourceString(Lib,426);
+     Form1.Label26.Caption:=LoadResourceString(Lib,427);
+     Form1.Label28.Caption:=LoadResourceString(Lib,411);
+     Form1.Label30.Caption:=LoadResourceString(Lib,428);
+     Form1.Label32.Caption:=LoadResourceString(Lib,429);
+     Form1.Label34.Caption:=LoadResourceString(Lib,430);
+     Form1.Label36.Caption:=LoadResourceString(Lib,431);
+     Form1.Label52.Caption:=LoadResourceString(Lib,409);
+     Form1.Label54.Caption:=LoadResourceString(Lib,410);
+     Form1.Label38.Caption:=LoadResourceString(Lib,432);
+     Form1.Label65.Caption:=LoadResourceString(Lib,433);
+     Form1.Label40.Caption:=LoadResourceString(Lib,434);
+     Form1.Label42.Caption:=LoadResourceString(Lib,435);
+     Form1.Label43.Caption:=LoadResourceString(Lib,436);
+     Form1.Label44.Caption:=LoadResourceString(Lib,437);
+     Form1.Label45.Caption:=LoadResourceString(Lib,438);
+     Form1.Label46.Caption:=LoadResourceString(Lib,439);
+     Form1.Label47.Caption:=LoadResourceString(Lib,412);
+     Form1.Label45.Caption:=LoadResourceString(Lib,438);
+     Form1.Label48.Caption:=LoadResourceString(Lib,440);
+     Form1.Label49.Caption:=LoadResourceString(Lib,441);
+     Form1.Label50.Caption:=LoadResourceString(Lib,409);
+     Form1.Label51.Caption:=LoadResourceString(Lib,410);
+     Unit2.version:=LoadResourceString(Lib,442);
+     Unit2.programmer:=LoadResourceString(Lib,443);
+     Unit2.contact:=LoadResourceString(Lib,444);
+     Unit2.productionTime:=LoadResourceString(Lib,445);
+     Unit2.informationFormName:=LoadResourceString(Lib,446);
+     Form1.MenuItem18.Caption:=LoadResourceString(Lib,407);
+     Form1.MenuItem20.Caption:=LoadResourceString(Lib,408);
+     Form1.MenuItem1.Caption:=LoadResourceString(Lib,447);
+     Form1.MenuItem2.Caption:=LoadResourceString(Lib,448);
+     Form1.MenuItem10.Caption:=LoadResourceString(Lib,448);
+     Form1.MenuItem4.Caption:=LoadResourceString(Lib,449);
+     Form1.MenuItem12.Caption:=LoadResourceString(Lib,449);
+     Form1.MenuItem5.Caption:=LoadResourceString(Lib,450);
+     Form1.MenuItem13.Caption:=LoadResourceString(Lib,450);
+     Form1.MenuItem6.Caption:=LoadResourceString(Lib,451);
+     Form1.MenuItem14.Caption:=LoadResourceString(Lib,451);
+     Form1.MenuItem7.Caption:=LoadResourceString(Lib,447);
+     Form1.MenuItem15.Caption:=LoadResourceString(Lib,447);
+     Form1.MenuItem9.Caption:=LoadResourceString(Lib,452);
+     Form1.MenuItem17.Caption:=LoadResourceString(Lib,452);
+     Form1.Label56.Caption:=LoadResourceString(Lib,453);
+     //Form1.Label59.Caption:=LoadResourceString(Lib,454,3900);
+     //Form1.Label60.Caption:=LoadResourceString(Lib,455);
+     Form1.Label61.Caption:=LoadResourceString(Lib,456);
+     Form1.Label62.Caption:=LoadResourceString(Lib,457,1900);
+
+     { Buttons }
+     buttonAdd:=LoadResourceString(Lib,501);
+     buttonUpdate:=LoadResourceString(Lib,502);
+     buttonLock:=LoadResourceString(Lib,503);
+     buttonUnlock:=LoadResourceString(Lib,504);
+
+     Form1.Button1.Caption:=LoadResourceString(Lib,505);
+     Form1.Button2.Caption:=LoadResourceString(Lib,506);
+     Form1.Button3.Caption:=LoadResourceString(Lib,507);
+     Form1.Button4.Caption:=LoadResourceString(Lib,508);
+     Form1.Button5.Caption:=LoadResourceString(Lib,506);
+     Form1.Button12.Caption:=LoadResourceString(Lib,501);
+     Form1.Button13.Caption:=LoadResourceString(Lib,509);
+     Form1.Button22.Caption:=LoadResourceString(Lib,510);
+     Form1.Button26.Caption:=LoadResourceString(Lib,503);
+     Form1.Button14.Caption:=LoadResourceString(Lib,511);
+     Form1.Button15.Caption:=LoadResourceString(Lib,509);
+     Form1.Button17.Caption:=LoadResourceString(Lib,512);
+     Form1.Button16.Caption:=LoadResourceString(Lib,513);
+     Form1.Button18.Caption:=LoadResourceString(Lib,511);
+     Form1.Button19.Caption:=LoadResourceString(Lib,514);
+     Form1.Button20.Caption:=LoadResourceString(Lib,509);
+     Form1.Button21.Caption:=LoadResourceString(Lib,514);
+     Form1.Button23.Caption:=LoadResourceString(Lib,513);
+     Form1.Button24.Caption:=LoadResourceString(Lib,514);
+     Form1.Button25.Caption:=LoadResourceString(Lib,506);
+     Unit2.buttonClose:=LoadResourceString(Lib,510);
+end;
+
 { Form elements }
 
 procedure TForm1.FormCreate(Sender: TObject);
 var version: word;
     aes:     TSynaAes;
+    lib:     THandle;
+    {$IFDEF LCLWinCE}
+    libPath: widestring;
+    {$ELSE}
+    libPath: string;
+    {$ENDIF}
 begin
      FormSize:=Form1.Height;
      Form1.Caption:='Noter Client';
+     libPath:=UTF8ToAnsi(Application.Location+'test.dll');
+     {$IFDEF LCLWinCE}
+     lib:=LoadLibrary(PWideChar(libPath));
+     {$ELSE}
+     lib:=LoadLibrary(PChar(libPath));
+     {$ENDIF}
+     If lib=0 then
+     begin
+          Error('Library could not be loaded!'#13#10'Application finishes.');
+          Application.Terminate;
+     end
+     else
+     begin
+          LoadStringTable(lib);
+          FreeLibrary(lib);
+     end;
      {$IFDEF LCLWinCE}
      PrevWndProc:=Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
      {$ENDIF}

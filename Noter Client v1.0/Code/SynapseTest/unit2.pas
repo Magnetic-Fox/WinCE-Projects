@@ -25,6 +25,7 @@ type
     Label8: TLabel;
     Label9: TLabel;
     procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure Label5Click(Sender: TObject);
     procedure Label5MouseDown(Sender: TObject; Button: TMouseButton;
@@ -39,8 +40,8 @@ type
     { public declarations }
   end;
 
-var
-  Form2: TForm2;
+var Form2: TForm2;
+    version, programmer, contact, productionTime, buttonClose, informationFormName: utf8string;
 
 implementation
 
@@ -69,6 +70,16 @@ end;
 procedure TForm2.Button1Click(Sender: TObject);
 begin
      Form2.Close;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+     Label9.Caption:=version;
+     Label3.Caption:=programmer;
+     Label4.Caption:=contact;
+     Label6.Caption:=productionTime;
+     Button1.Caption:=buttonClose;
+     Form2.Caption:=informationFormName;
 end;
 
 procedure TForm2.FormResize(Sender: TObject);
