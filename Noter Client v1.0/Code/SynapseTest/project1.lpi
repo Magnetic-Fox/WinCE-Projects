@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="5">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -61,6 +61,16 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit2"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="noter_constants.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="noter_constants"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="stringtable_consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="stringtable_consts"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

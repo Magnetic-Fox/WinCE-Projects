@@ -18,7 +18,7 @@ uses
 var existingWindow: windows.HWND;
 
 begin
-     RequireDerivedFormResource := True;
+     RequireDerivedFormResource:=True;
      {$IFDEF LCLWinCE}
      WinCEWidgetset.WinCETitlePolicy:=tpOKButtonOnlyOnDialogs;
      {$ENDIF}

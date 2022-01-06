@@ -7,54 +7,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, Buttons, Menus, httpsend, synacode, fpjson, jsonparser,
-  Dos, Windows, synacrypt, IniFiles, Clipbrd, Unit2
+  Dos, Windows, synacrypt, IniFiles, Clipbrd, CheckLst, Unit2, noter_constants,
+  stringtable_consts
   {$IFDEF LCLWinCE}
   , sipapi
   {$ENDIF}
   ;
 
 { ---------------------------------------------------------------------------- }
-
-{ Constants }
-
-{ Files }
-const helpFile=                    '\Windows\Help\Noter Client.lnk';
-
-{ Additional codes }
-const emptyImage=                  -10240;
-const connecting=                  10240;
-
-{ Answer codes }
-const getError=                    -1024;
-const serviceDisabled=             -768;
-const serverError=                 -512;
-const noteAlreadyUnlocked=         -14;
-const noteAlreadyLocked=           -13;
-const noteLocked=                  -12;
-const userRemoveError=             -11;
-const userNotExist=                -10;
-const noteNotExist=                -9;
-const noNecessaryInfo=             -8;
-const userDeactivated=             -7;
-const loginIncorrect=              -6;
-const unknownAction=               -5;
-const noCredentials=               -4;
-const userExists=                  -3;
-const noUsableInfoInPOST=          -2;
-const invalidRequest=              -1;
-const OK=                          0;
-const userCreated=                 1;
-const userUpdated=                 2;
-const userRemoved=                 3;
-const listSuccessful=              4;
-const noteGetSuccessful=           5;
-const noteCreateSuccessful=        6;
-const noteUpdateSuccessful=        7;
-const noteDeleteSuccessful=        8;
-const userInfoGetSuccessful=       9;
-const noteLockSuccessful=          10;
-const noteUnlockSuccessful=        11;
-const serverChangedSuccessful=     1024;
 
 { Temporary booleans }
 const askUnsavedChanges=           true;
@@ -64,7 +24,8 @@ const askUpdateNote=               true;
 const askDeleteNote=               true;
 const askWantLogout=               true;
 
-{ ---------------------------------------------------------------------------- }
+{ Temporary const }
+const langLibName=                 'lang_pl.dll';
 
 { Structures definition }
 
@@ -130,6 +91,9 @@ Procedure changeIconAndLastCode(code: integer);
 Procedure bringToFront;
 Function LoadResourceString(var Lib: THandle; Index: longint; maxBuffer: longint = 1024): utf8string;
 Procedure LoadStringTable(var Lib: THandle);
+Procedure loadLocaleStrings(libName: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF});
+Procedure updateNotesCount(count: longint = 0; selected: longint = 0);
+Function getShortName(libName: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF}): utf8string;
 
 { ---------------------------------------------------------------------------- }
 
@@ -159,7 +123,15 @@ type
     Button24: TButton;
     Button25: TButton;
     Button26: TButton;
+    Button27: TButton;
+    Button28: TButton;
+    Button29: TButton;
     Button3: TButton;
+    Button30: TButton;
+    Button31: TButton;
+    Button32: TButton;
+    Button33: TButton;
+    Button34: TButton;
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
@@ -168,6 +140,7 @@ type
     Button9: TButton;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
+    CheckListBox1: TCheckListBox;
     Edit1: TEdit;
     Edit10: TEdit;
     Edit11: TEdit;
@@ -245,10 +218,18 @@ type
     Label64: TLabel;
     Label65: TLabel;
     Label66: TLabel;
+    Label67: TLabel;
+    Label68: TLabel;
+    Label69: TLabel;
     Label7: TLabel;
+    Label70: TLabel;
+    Label71: TLabel;
+    Label72: TLabel;
+    Label73: TLabel;
     Label8: TLabel;
     Label9: TLabel;
     ListBox1: TListBox;
+    ListBox2: TListBox;
     Memo1: TMemo;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -275,6 +256,9 @@ type
     Page10: TPage;
     Page11: TPage;
     Page12: TPage;
+    Page13: TPage;
+    Page14: TPage;
+    Page15: TPage;
     Page2: TPage;
     Page3: TPage;
     Page4: TPage;
@@ -307,7 +291,15 @@ type
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
     procedure Button26Click(Sender: TObject);
+    procedure Button27Click(Sender: TObject);
+    procedure Button28Click(Sender: TObject);
+    procedure Button29Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button30Click(Sender: TObject);
+    procedure Button31Click(Sender: TObject);
+    procedure Button32Click(Sender: TObject);
+    procedure Button33Click(Sender: TObject);
+    procedure Button34Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
@@ -365,6 +357,13 @@ type
     procedure Label58MouseLeave(Sender: TObject);
     procedure Label58MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure Label69Click(Sender: TObject);
+    procedure Label69MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Label69MouseEnter(Sender: TObject);
+    procedure Label69MouseLeave(Sender: TObject);
+    procedure Label69MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Memo1Change(Sender: TObject);
     procedure Memo1Enter(Sender: TObject);
@@ -391,6 +390,15 @@ type
     procedure Page12BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page12Resize(Sender: TObject);
+    procedure Page13BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
+    procedure Page13Resize(Sender: TObject);
+    procedure Page14BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
+    procedure Page14Resize(Sender: TObject);
+    procedure Page15BeforeShow(ASender: TObject; ANewPage: TPage;
+      ANewIndex: Integer);
+    procedure Page15Resize(Sender: TObject);
     procedure Page1BeforeShow(ASender: TObject; ANewPage: TPage;
       ANewIndex: Integer);
     procedure Page1Resize(Sender: TObject);
@@ -438,7 +446,8 @@ var Form1: TForm1;
     elements: array of element;
     userAgent, server, share, username, password, iniFile: utf8string;
     ini: TIniFile;
-    settingsLoaded, newSize, noteChanged, userChanged, serverChanged, newIDSet: boolean;
+    settingsLoaded, newSize, noteChanged, userChanged, serverChanged,
+        newIDSet: boolean;
     selectedNoteIndex, newID, FormSize, lastCode: integer;
     tempNote: note;
     tempUser: user;
@@ -446,19 +455,27 @@ var Form1: TForm1;
     {$IFDEF LCLWinCE}
     PrevWndProc: WNDPROC;
     {$ENDIF}
+    dllFilesList: TStringList;
 
 { String variables }
-var informationPreviousServer, infoOK, infoUserCreated, infoUserUpdated, infoUserDeleted,
-    infoNoteListGot, infoNoteRetrieved, infoNoteCreated, infoNoteUpdated, infoNoteDeleted,
-    infoUserInfoGot, infoNoteLocked, infoNoteUnlocked, infoServerChanged, questionUnsavedChanges,
-    questionDeleteAccount, questionChangeCredentials, questionUpdateNote, questionDeleteNote,
-    questionWantLogout, errorNoHelpFile, errorFillForms, errorProvidePassword, errorPasswordNotMatching,
-    errorWrongAnswer, errorServerShutdown, errorInternalServer, errorNoteAlreadyUnlocked,
-    errorNoteAlreadyLocked, errorNoteLocked, errorUserDelete, errorWrongUser, errorWrongNote,
-    errorNoNeededData, errorUserLocked, errorWrongCredentials, errorWrongCommand, errorNoCredentials,
-    errorUsernameTaken, errorNoUsableData, errorWrongRequest, errorUnknownCode, labelConnectionCheckError,
-    labelConnectionCheckOK, labelRegisteredSuccessfully, labelRegistrationError, labelLoggedInSuccessfully,
-    labelLoggingInError, labelID, labelDate, buttonAdd, buttonUpdate, buttonLock, buttonUnlock: utf8string;
+var informationPreviousServer, infoOK, infoUserCreated, infoUserUpdated,
+    infoUserDeleted, infoNoteListGot, infoNoteRetrieved, infoNoteCreated,
+    infoNoteUpdated, infoNoteDeleted, infoUserInfoGot, infoNoteLocked,
+    infoNoteUnlocked, infoServerChanged, questionUnsavedChanges,
+    questionDeleteAccount, questionChangeCredentials, questionUpdateNote,
+    questionDeleteNote, questionWantLogout, errorNoHelpFile, errorFillForms,
+    errorProvidePassword, errorPasswordNotMatching, errorWrongAnswer,
+    errorServerShutdown, errorInternalServer, errorNoteAlreadyUnlocked,
+    errorNoteAlreadyLocked, errorNoteLocked, errorUserDelete, errorWrongUser,
+    errorWrongNote, errorNoNeededData, errorUserLocked, errorWrongCredentials,
+    errorWrongCommand, errorNoCredentials, errorUsernameTaken,
+    errorNoUsableData, errorWrongRequest, errorUnknownCode,
+    labelConnectionCheckError, labelConnectionCheckOK,
+    labelRegisteredSuccessfully, labelRegistrationError,
+    labelLoggedInSuccessfully, labelLoggingInError, labelID, labelDate,
+    buttonAdd, buttonUpdate, buttonLock, buttonUnlock, enLangName, langName,
+    forVersion, createdBy, creationDate, noQuestions, someQuestions,
+    allQuestions, langLibInfo, langLibAuthor, langLibDate: utf8string;
 
 implementation
 
@@ -632,15 +649,16 @@ var test: THTTPSend;
 begin
      test:=THTTPSend.Create;
      test.Timeout:=5000;
+     test.Sock.SetTimeout(5000);
      test.MimeType:='application/x-www-form-urlencoded';
      test.Document.Clear;
-     urldata:='action='+EncodeURL(action)
-             +'&username='+EncodeURL(username)
-             +'&password='+EncodeURL(password);
-     if(length(subject)>0) then urldata:=urldata+'&subject='+EncodeURL(subject);
-     if(length(entry)>0) then urldata:=urldata+'&entry='+EncodeURL(entry);
-     if(length(newPassword)>0) then urldata:=urldata+'&newPassword='+EncodeURL(newPassword);
-     if(noteID>0) then urldata:=urldata+'&noteID='+EncodeURL(IntToStr(noteID));
+     urldata:='action='+EncodeURLElement(action)
+             +'&username='+EncodeURLElement(username)
+             +'&password='+EncodeURLElement(password);
+     if(length(subject)>0) then urldata:=urldata+'&subject='+EncodeURLElement(subject);
+     if(length(entry)>0) then urldata:=urldata+'&entry='+EncodeURLElement(entry);
+     if(length(newPassword)>0) then urldata:=urldata+'&newPassword='+EncodeURLElement(newPassword);
+     if(noteID>0) then urldata:=urldata+'&noteID='+EncodeURLElement(IntToStr(noteID));
      test.Document.Write(Pointer(urldata)^,Length(urldata));
      test.UserAgent:=userAgent;
      test.HTTPMethod('POST','http://'+server+'/'+share+'/index.php');
@@ -701,7 +719,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        If jData=nil then raise Exception.Create('No usable JSON data.');
+        If jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         count:=jData.FindPath('answer_info').FindPath('attachment').Count;
         SetLength(atta,0);
         SetLength(atta,count);
@@ -726,7 +744,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        if jData=nil then raise Exception.Create('No usable JSON data.');
+        if jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         output.id:=jData.FindPath('answer').FindPath('user').FindPath('id').AsInteger;
         output.username:=jData.FindPath('answer').FindPath('user').FindPath('username').AsString;
         output.registered:=StrToDateTime(jData.FindPath('answer').FindPath('user').FindPath('date_registered').AsString);
@@ -752,7 +770,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        if jData=nil then raise Exception.Create('No usable JSON data.');
+        if jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         count:=jData.FindPath('answer').FindPath('count').AsInteger;
         SetLength(list,0);
         SetLength(list,count);
@@ -781,7 +799,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        if jData=nil then raise Exception.Create('No usable JSON data.');
+        if jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         output.id:=jData.FindPath('answer').FindPath('note').FindPath('id').AsInteger;
         output.subject:=jData.FindPath('answer').FindPath('note').FindPath('subject').AsString;
         output.entry:=jData.FindPath('answer').FindPath('note').FindPath('entry').AsString;
@@ -805,7 +823,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        if jData=nil then raise Exception.Create('No usable JSON data.');
+        if jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         output.name:=jData.FindPath('server').FindPath('name').AsString;
         output.timezone:=jData.FindPath('server').FindPath('timezone').AsString;
         output.version:=jData.FindPath('server').FindPath('version').AsString;
@@ -824,7 +842,7 @@ var jData: TJSONData;
 begin
      Try
         jData:=GetJSON(input);
-        if jData=nil then raise Exception.Create('No usable JSON data.');
+        if jData=nil then raise Exception.Create(DEFAULT_NOJSON);
         newID:=jData.FindPath('answer').FindPath('new_id').AsInteger;
         jData.Free;
      Except
@@ -865,175 +883,201 @@ end;
 
 Procedure LoadStringTable(var Lib: THandle);
 begin
+     { Library information }
+     enLangName:=                 LoadResourceString(Lib, LIBINFO_EN_LANGNAME);
+     langName:=                   LoadResourceString(Lib, LIBINFO_LANGUAGE);
+     forVersion:=                 LoadResourceString(Lib, LIBINFO_FORVERSION);
+     createdBy:=                  LoadResourceString(Lib, LIBINFO_CREATEDBY);
+     creationDate:=               LoadResourceString(Lib, LIBINFO_CREATIONDATE);
+
      { Information }
-     informationPreviousServer:=  LoadResourceString(Lib,101);
-     infoOK:=                     LoadResourceString(Lib,102);
-     infoUserCreated:=            LoadResourceString(Lib,103);
-     infoUserUpdated:=            LoadResourceString(Lib,104);
-     infoUserDeleted:=            LoadResourceString(Lib,105);
-     infoNoteListGot:=            LoadResourceString(Lib,106);
-     infoNoteRetrieved:=          LoadResourceString(Lib,107);
-     infoNoteCreated:=            LoadResourceString(Lib,108);
-     infoNoteUpdated:=            LoadResourceString(Lib,109);
-     infoNoteDeleted:=            LoadResourceString(Lib,110);
-     infoUserInfoGot:=            LoadResourceString(Lib,111);
-     infoNoteLocked:=             LoadResourceString(Lib,112);
-     infoNoteUnlocked:=           LoadResourceString(Lib,113);
-     infoServerChanged:=          LoadResourceString(Lib,114);
+     informationPreviousServer:=  LoadResourceString(Lib, INFO_PREVIOUSSERVER);
+     infoOK:=                     LoadResourceString(Lib, INFO_OK);
+     infoUserCreated:=            LoadResourceString(Lib, INFO_USERCREATED);
+     infoUserUpdated:=            LoadResourceString(Lib, INFO_USERUPDATED);
+     infoUserDeleted:=            LoadResourceString(Lib, INFO_USERDELETED);
+     infoNoteListGot:=            LoadResourceString(Lib, INFO_NOTELISTGOT);
+     infoNoteRetrieved:=          LoadResourceString(Lib, INFO_NOTERETRIEVED);
+     infoNoteCreated:=            LoadResourceString(Lib, INFO_NOTECREATED);
+     infoNoteUpdated:=            LoadResourceString(Lib, INFO_NOTEUPDATED);
+     infoNoteDeleted:=            LoadResourceString(Lib, INFO_NOTEDELETED);
+     infoUserInfoGot:=            LoadResourceString(Lib, INFO_USERINFOGOT);
+     infoNoteLocked:=             LoadResourceString(Lib, INFO_NOTELOCKED);
+     infoNoteUnlocked:=           LoadResourceString(Lib, INFO_NOTEUNLOCKED);
+     infoServerChanged:=          LoadResourceString(Lib, INFO_SERVERCHANGED);
 
      { Questions }
-     questionUnsavedChanges:=     LoadResourceString(Lib,201);
-     questionDeleteAccount:=      LoadResourceString(Lib,202);
-     questionChangeCredentials:=  LoadResourceString(Lib,203);
-     questionUpdateNote:=         LoadResourceString(Lib,204);
-     questionDeleteNote:=         LoadResourceString(Lib,205);
-     questionWantLogout:=         LoadResourceString(Lib,206);
+     questionUnsavedChanges:=     LoadResourceString(Lib, QUESTION_UNSAVEDCHANGES);
+     questionDeleteAccount:=      LoadResourceString(Lib, QUESTION_DELETEACCOUNT);
+     questionChangeCredentials:=  LoadResourceString(Lib, QUESTION_CHANGECREDENTIALS);
+     questionUpdateNote:=         LoadResourceString(Lib, QUESTION_UPDATENOTE);
+     questionDeleteNote:=         LoadResourceString(Lib, QUESTION_DELETENOTE);
+     questionWantLogout:=         LoadResourceString(Lib, QUESTION_WANTLOGOUT);
 
      { Errors }
-     errorNoHelpFile:=            LoadResourceString(Lib,301);
-     errorFillForms:=             LoadResourceString(Lib,302);
-     errorProvidePassword:=       LoadResourceString(Lib,303);
-     errorPasswordNotMatching:=   LoadResourceString(Lib,304);
-     errorWrongAnswer:=           LoadResourceString(Lib,305);
-     errorServerShutdown:=        LoadResourceString(Lib,306);
-     errorInternalServer:=        LoadResourceString(Lib,307);
-     errorNoteAlreadyUnlocked:=   LoadResourceString(Lib,308);
-     errorNoteAlreadyLocked:=     LoadResourceString(Lib,309);
-     errorNoteLocked:=            LoadResourceString(Lib,310);
-     errorUserDelete:=            LoadResourceString(Lib,311);
-     errorWrongUser:=             LoadResourceString(Lib,312);
-     errorWrongNote:=             LoadResourceString(Lib,313);
-     errorNoNeededData:=          LoadResourceString(Lib,314);
-     errorUserLocked:=            LoadResourceString(Lib,315);
-     errorWrongCredentials:=      LoadResourceString(Lib,316);
-     errorWrongCommand:=          LoadResourceString(Lib,317);
-     errorNoCredentials:=         LoadResourceString(Lib,318);
-     errorUsernameTaken:=         LoadResourceString(Lib,319);
-     errorNoUsableData:=          LoadResourceString(Lib,320);
-     errorWrongRequest:=          LoadResourceString(Lib,321);
-     errorUnknownCode:=           LoadResourceString(Lib,322);
+     errorNoHelpFile:=            LoadResourceString(Lib, ERROR_NOHELPFILE);
+     errorFillForms:=             LoadResourceString(Lib, ERROR_FILLFORMS);
+     errorProvidePassword:=       LoadResourceString(Lib, ERROR_PROVIDEPASSWORD);
+     errorPasswordNotMatching:=   LoadResourceString(Lib, ERROR_PASSWORDNOTMATCHING);
+     errorWrongAnswer:=           LoadResourceString(Lib, ERROR_WRONGANSWER);
+     errorServerShutdown:=        LoadResourceString(Lib, ERROR_SERVERSHUTDOWN);
+     errorInternalServer:=        LoadResourceString(Lib, ERROR_INTERNALSERVER);
+     errorNoteAlreadyUnlocked:=   LoadResourceString(Lib, ERROR_NOTEALREADYUNLOCKED);
+     errorNoteAlreadyLocked:=     LoadResourceString(Lib, ERROR_NOTEALREADYLOCKED);
+     errorNoteLocked:=            LoadResourceString(Lib, ERROR_NOTELOCKED);
+     errorUserDelete:=            LoadResourceString(Lib, ERROR_USERDELETE);
+     errorWrongUser:=             LoadResourceString(Lib, ERROR_WRONGUSER);
+     errorWrongNote:=             LoadResourceString(Lib, ERROR_WRONGNOTE);
+     errorNoNeededData:=          LoadResourceString(Lib, ERROR_NONEEDEDDATA);
+     errorUserLocked:=            LoadResourceString(Lib, ERROR_USERLOCKED);
+     errorWrongCredentials:=      LoadResourceString(Lib, ERROR_WRONGCREDENTIALS);
+     errorWrongCommand:=          LoadResourceString(Lib, ERROR_WRONGCOMMAND);
+     errorNoCredentials:=         LoadResourceString(Lib, ERROR_NOCREDENTIALS);
+     errorUsernameTaken:=         LoadResourceString(Lib, ERROR_USERNAMETAKEN);
+     errorNoUsableData:=          LoadResourceString(Lib, ERROR_NOUSABLEDATA);
+     errorWrongRequest:=          LoadResourceString(Lib, ERROR_WRONGREQUEST);
+     errorUnknownCode:=           LoadResourceString(Lib, ERROR_UNKNOWNCODE);
 
      { Labels }
-     labelConnectionCheckError:=  LoadResourceString(Lib,401);
-     labelConnectionCheckOK:=     LoadResourceString(Lib,402);
-     labelRegisteredSuccessfully:=LoadResourceString(Lib,403);
-     labelRegistrationError:=     LoadResourceString(Lib,404);
-     labelLoggedInSuccessfully:=  LoadResourceString(Lib,405);
-     labelLoggingInError:=        LoadResourceString(Lib,406);
-     labelID:=                    LoadResourceString(Lib,407);
-     labelDate:=                  LoadResourceString(Lib,408);
+     labelConnectionCheckError:=  LoadResourceString(Lib, LABEL_CONNECTIONCHECKERROR);
+     labelConnectionCheckOK:=     LoadResourceString(Lib, LABEL_CONNECTIONCHECKOK);
+     labelRegisteredSuccessfully:=LoadResourceString(Lib, LABEL_REGISTEREDSUCCESSFULLY);
+     labelRegistrationError:=     LoadResourceString(Lib, LABEL_REGISTRATIONERROR);
+     labelLoggedInSuccessfully:=  LoadResourceString(Lib, LABEL_LOGGEDINSUCCESSFULLY);
+     labelLoggingInError:=        LoadResourceString(Lib, LABEL_LOGGINGINERROR);
+     labelID:=                    LoadResourceString(Lib, LABEL_ID);
+     labelDate:=                  LoadResourceString(Lib, LABEL_DATE);
 
-     Form1.Label3.Caption:=       LoadResourceString(Lib,409);
-     Form1.Label4.Caption:=       LoadResourceString(Lib,410);
-     Form1.Label5.Caption:=       LoadResourceString(Lib,411);
-     Form1.Label6.Caption:=       LoadResourceString(Lib,412);
-     Form1.CheckBox1.Caption:=    LoadResourceString(Lib,413);
-     Form1.Label8.Caption:=       LoadResourceString(Lib,414);
-     Form1.Label2.Caption:=       LoadResourceString(Lib,405);
-     Form1.Label9.Caption:=       LoadResourceString(Lib,415);
-     Form1.Label12.Caption:=      LoadResourceString(Lib,416);
-     Form1.Label57.Caption:=      LoadResourceString(Lib,417);
-     Form1.Label58.Caption:=      LoadResourceString(Lib,418);
-     Form1.Label13.Caption:=      LoadResourceString(Lib,419);
-     Form1.Label14.Caption:=      LoadResourceString(Lib,420);
-     Form1.CheckBox2.Caption:=    LoadResourceString(Lib,421);
-     Form1.Label15.Caption:=      LoadResourceString(Lib,422);
-     Form1.Label17.Caption:=      LoadResourceString(Lib,423);
-     Form1.Label19.Caption:=      LoadResourceString(Lib,424);
-     Form1.Label21.Caption:=      LoadResourceString(Lib,425);
-     Form1.Label23.Caption:=      LoadResourceString(Lib,426);
-     Form1.Label26.Caption:=      LoadResourceString(Lib,427);
-     Form1.Label28.Caption:=      LoadResourceString(Lib,411);
-     Form1.Label30.Caption:=      LoadResourceString(Lib,428);
-     Form1.Label32.Caption:=      LoadResourceString(Lib,429);
-     Form1.Label34.Caption:=      LoadResourceString(Lib,430);
-     Form1.Label36.Caption:=      LoadResourceString(Lib,431);
-     Form1.Label52.Caption:=      LoadResourceString(Lib,409);
-     Form1.Label54.Caption:=      LoadResourceString(Lib,410);
-     Form1.Label38.Caption:=      LoadResourceString(Lib,432);
-     Form1.Label65.Caption:=      LoadResourceString(Lib,433);
-     Form1.Label40.Caption:=      LoadResourceString(Lib,434);
-     Form1.Label42.Caption:=      LoadResourceString(Lib,435);
-     Form1.Label43.Caption:=      LoadResourceString(Lib,436);
-     Form1.Label44.Caption:=      LoadResourceString(Lib,437);
-     Form1.Label45.Caption:=      LoadResourceString(Lib,438);
-     Form1.Label46.Caption:=      LoadResourceString(Lib,439);
-     Form1.Label47.Caption:=      LoadResourceString(Lib,412);
-     Form1.Label45.Caption:=      LoadResourceString(Lib,438);
-     Form1.Label48.Caption:=      LoadResourceString(Lib,440);
-     Form1.Label49.Caption:=      LoadResourceString(Lib,441);
-     Form1.Label50.Caption:=      LoadResourceString(Lib,409);
-     Form1.Label51.Caption:=      LoadResourceString(Lib,410);
-     Unit2.version:=              LoadResourceString(Lib,442);
-     Unit2.programmer:=           LoadResourceString(Lib,443);
-     Unit2.contact:=              LoadResourceString(Lib,444);
-     Unit2.productionTime:=       LoadResourceString(Lib,445);
-     Unit2.informationFormName:=  LoadResourceString(Lib,446);
-     Form1.MenuItem18.Caption:=   LoadResourceString(Lib,407);
-     Form1.MenuItem20.Caption:=   LoadResourceString(Lib,408);
-     Form1.MenuItem1.Caption:=    LoadResourceString(Lib,447);
-     Form1.MenuItem2.Caption:=    LoadResourceString(Lib,448);
-     Form1.MenuItem10.Caption:=   LoadResourceString(Lib,448);
-     Form1.MenuItem4.Caption:=    LoadResourceString(Lib,449);
-     Form1.MenuItem12.Caption:=   LoadResourceString(Lib,449);
-     Form1.MenuItem5.Caption:=    LoadResourceString(Lib,450);
-     Form1.MenuItem13.Caption:=   LoadResourceString(Lib,450);
-     Form1.MenuItem6.Caption:=    LoadResourceString(Lib,451);
-     Form1.MenuItem14.Caption:=   LoadResourceString(Lib,451);
-     Form1.MenuItem7.Caption:=    LoadResourceString(Lib,447);
-     Form1.MenuItem15.Caption:=   LoadResourceString(Lib,447);
-     Form1.MenuItem9.Caption:=    LoadResourceString(Lib,452);
-     Form1.MenuItem17.Caption:=   LoadResourceString(Lib,452);
-     Form1.Label56.Caption:=      LoadResourceString(Lib,453);
-     Form1.Label59.Caption:=      LoadResourceString(Lib,454,3900);
-     Form1.Label60.Caption:=      LoadResourceString(Lib,455);
-     Form1.Label61.Caption:=      LoadResourceString(Lib,456);
-     Form1.Label62.Caption:=      LoadResourceString(Lib,457,1900);
+     Form1.Label3.Caption:=       LoadResourceString(Lib, LABEL_SERVERADDRESS);
+     Form1.Label4.Caption:=       LoadResourceString(Lib, LABEL_SHARE);
+     Form1.Label5.Caption:=       LoadResourceString(Lib, LABEL_USERNAME);
+     Form1.Label6.Caption:=       LoadResourceString(Lib, LABEL_PASSWORD);
+     Form1.CheckBox1.Caption:=    LoadResourceString(Lib, LABEL_REGISTER);
+     Form1.Label8.Caption:=       LoadResourceString(Lib, LABEL_CHECKINGCONNECTION);
+     Form1.Label2.Caption:=       LoadResourceString(Lib, LABEL_LOGGEDINSUCCESSFULLY);
+     Form1.Label9.Caption:=       LoadResourceString(Lib, LABEL_NOTES);
+     Form1.Label12.Caption:=      LoadResourceString(Lib, LABEL_CONFIRMPASSWORD);
+     Form1.Label57.Caption:=      LoadResourceString(Lib, LABEL_REGISTRATION);
+     Form1.Label58.Caption:=      LoadResourceString(Lib, LABEL_TERMSACCEPT);
+     Form1.Label13.Caption:=      LoadResourceString(Lib, LABEL_SUBJECT);
+     Form1.Label14.Caption:=      LoadResourceString(Lib, LABEL_ENTRY);
+     Form1.CheckBox2.Caption:=    LoadResourceString(Lib, LABEL_NEWNOTE);
+     Form1.Label15.Caption:=      LoadResourceString(Lib, LABEL_NOTEID);
+     Form1.Label17.Caption:=      LoadResourceString(Lib, LABEL_ADDDATE);
+     Form1.Label19.Caption:=      LoadResourceString(Lib, LABEL_LASTMODDATE);
+     Form1.Label21.Caption:=      LoadResourceString(Lib, LABEL_ADDEDUSING);
+     Form1.Label23.Caption:=      LoadResourceString(Lib, LABEL_CHANGEDUSING);
+     Form1.Label26.Caption:=      LoadResourceString(Lib, LABEL_USERID);
+     Form1.Label28.Caption:=      LoadResourceString(Lib, LABEL_USERNAME);
+     Form1.Label30.Caption:=      LoadResourceString(Lib, LABEL_REGISTRATIONDATE);
+     Form1.Label32.Caption:=      LoadResourceString(Lib, LABEL_REGISTEREDUSING);
+     Form1.Label34.Caption:=      LoadResourceString(Lib, LABEL_USERLASTCHANGES);
+     Form1.Label36.Caption:=      LoadResourceString(Lib, LABEL_USERLASTCHANGEDUSING);
+     Form1.Label52.Caption:=      LoadResourceString(Lib, LABEL_SERVERADDRESS);
+     Form1.Label54.Caption:=      LoadResourceString(Lib, LABEL_SHARE);
+     Form1.Label38.Caption:=      LoadResourceString(Lib, LABEL_SERVERNAME);
+     Form1.Label65.Caption:=      LoadResourceString(Lib, LABEL_TIMEZONE);
+     Form1.Label40.Caption:=      LoadResourceString(Lib, LABEL_SERVERVERSION);
+     Form1.Label42.Caption:=      LoadResourceString(Lib, LABEL_CHANGINGPASSWORD);
+     Form1.Label43.Caption:=      LoadResourceString(Lib, LABEL_CURRENTPASSWORD);
+     Form1.Label44.Caption:=      LoadResourceString(Lib, LABEL_NEWPASSWORD);
+     Form1.Label45.Caption:=      LoadResourceString(Lib, LABEL_CONFIRMNEWPASSWORD);
+     Form1.Label46.Caption:=      LoadResourceString(Lib, LABEL_ACCOUNTDELETION);
+     Form1.Label47.Caption:=      LoadResourceString(Lib, LABEL_PASSWORD);
+     Form1.Label48.Caption:=      LoadResourceString(Lib, LABEL_DELETIONWARNING);
+     Form1.Label49.Caption:=      LoadResourceString(Lib, LABEL_SERVERCHANGING);
+     Form1.Label50.Caption:=      LoadResourceString(Lib, LABEL_SERVERADDRESS);
+     Form1.Label51.Caption:=      LoadResourceString(Lib, LABEL_SHARE);
+     Unit2.version:=              LoadResourceString(Lib, LABEL_VERSION);
+     Unit2.programmer:=           LoadResourceString(Lib, LABEL_PROGRAMMER);
+     Unit2.contact:=              LoadResourceString(Lib, LABEL_CONTACT);
+     Unit2.productionTime:=       LoadResourceString(Lib, LABEL_PRODUCTIONTIME);
+     Unit2.informationFormName:=  LoadResourceString(Lib, LABEL_INFORMATIONFORMNAME);
+     Form1.MenuItem18.Caption:=   LoadResourceString(Lib, LABEL_ID);
+     Form1.MenuItem20.Caption:=   LoadResourceString(Lib, LABEL_DATE);
+     Form1.MenuItem1.Caption:=    LoadResourceString(Lib, LABEL_DELETE);
+     Form1.MenuItem2.Caption:=    LoadResourceString(Lib, LABEL_UNDO);
+     Form1.MenuItem10.Caption:=   LoadResourceString(Lib, LABEL_UNDO);
+     Form1.MenuItem4.Caption:=    LoadResourceString(Lib, LABEL_CUT);
+     Form1.MenuItem12.Caption:=   LoadResourceString(Lib, LABEL_CUT);
+     Form1.MenuItem5.Caption:=    LoadResourceString(Lib, LABEL_COPY);
+     Form1.MenuItem13.Caption:=   LoadResourceString(Lib, LABEL_COPY);
+     Form1.MenuItem6.Caption:=    LoadResourceString(Lib, LABEL_PASTE);
+     Form1.MenuItem14.Caption:=   LoadResourceString(Lib, LABEL_PASTE);
+     Form1.MenuItem7.Caption:=    LoadResourceString(Lib, LABEL_DELETE);
+     Form1.MenuItem15.Caption:=   LoadResourceString(Lib, LABEL_DELETE);
+     Form1.MenuItem9.Caption:=    LoadResourceString(Lib, LABEL_SELECTALL);
+     Form1.MenuItem17.Caption:=   LoadResourceString(Lib, LABEL_SELECTALL);
+     Form1.Label56.Caption:=      LoadResourceString(Lib, LABEL_TERMS);
+     Form1.Label59.Caption:=      LoadResourceString(Lib, LABEL_TERMSPART1,  3900);
+     Form1.Label60.Caption:=      LoadResourceString(Lib, LABEL_TERMSPART2);
+     Form1.Label61.Caption:=      LoadResourceString(Lib, LABEL_PRIVACYPOLICY);
+     Form1.Label62.Caption:=      LoadResourceString(Lib, LABEL_PRIVACYTEXT, 1900);
+
+     noQuestions:=                LoadResourceString(Lib, LABEL_NOQUESTIONS);
+     someQuestions:=              LoadResourceString(Lib, LABEL_SOMEQUESTIONS);
+     allQuestions:=               LoadResourceString(Lib, LABEL_ALLQUESTIONS);
+
+     Form1.Label67.Caption:=      LoadResourceString(Lib, LABEL_PROGRAMSETTINGS);
+     Form1.Label71.Caption:=      LoadResourceString(Lib, LABEL_AVAILABLELANGUAGES);
+     Form1.Label73.Caption:=      LoadResourceString(Lib, LABEL_DISPLAYEDQUESTIONS);
+
+     Form1.CheckListBox1.Clear;
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKUNSAVEDCHANGES),nil);
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKDELETEACCOUNT),nil);
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKCHANGECREDENTIALS),nil);
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKUPDATENOTE),nil);
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKDELETENOTE),nil);
+     Form1.CheckListBox1.AddItem (LoadResourceString(Lib, LABEL_ASKWANTLOGOUT),nil);
+
+     langLibInfo:=                LoadResourceString(Lib, LABEL_LANGLIBINFO);
+     langLibAuthor:=              LoadResourceString(Lib, LABEL_LANGLIBAUTHOR);
+     langLibDate:=                LoadResourceString(Lib, LABEL_LANGLIBDATE);
 
      { Buttons }
-     buttonAdd:=                  LoadResourceString(Lib,501);
-     buttonUpdate:=               LoadResourceString(Lib,502);
-     buttonLock:=                 LoadResourceString(Lib,503);
-     buttonUnlock:=               LoadResourceString(Lib,504);
+     buttonAdd:=                  LoadResourceString(Lib, BUTTON_ADD);
+     buttonUpdate:=               LoadResourceString(Lib, BUTTON_UPDATE);
+     buttonLock:=                 LoadResourceString(Lib, BUTTON_LOCK);
+     buttonUnlock:=               LoadResourceString(Lib, BUTTON_UNLOCK);
 
-     Form1.Button1.Caption:=      LoadResourceString(Lib,505);
-     Form1.Button2.Caption:=      LoadResourceString(Lib,506);
-     Form1.Button3.Caption:=      LoadResourceString(Lib,507);
-     Form1.Button4.Caption:=      LoadResourceString(Lib,508);
-     Form1.Button5.Caption:=      LoadResourceString(Lib,506);
-     Form1.Button12.Caption:=     LoadResourceString(Lib,501);
-     Form1.Button13.Caption:=     LoadResourceString(Lib,509);
-     Form1.Button22.Caption:=     LoadResourceString(Lib,510);
-     Form1.Button26.Caption:=     LoadResourceString(Lib,503);
-     Form1.Button14.Caption:=     LoadResourceString(Lib,511);
-     Form1.Button15.Caption:=     LoadResourceString(Lib,509);
-     Form1.Button17.Caption:=     LoadResourceString(Lib,512);
-     Form1.Button16.Caption:=     LoadResourceString(Lib,513);
-     Form1.Button18.Caption:=     LoadResourceString(Lib,511);
-     Form1.Button19.Caption:=     LoadResourceString(Lib,514);
-     Form1.Button20.Caption:=     LoadResourceString(Lib,509);
-     Form1.Button21.Caption:=     LoadResourceString(Lib,514);
-     Form1.Button23.Caption:=     LoadResourceString(Lib,513);
-     Form1.Button24.Caption:=     LoadResourceString(Lib,514);
-     Form1.Button25.Caption:=     LoadResourceString(Lib,506);
-     Unit2.buttonClose:=          LoadResourceString(Lib,510);
+     Form1.Button1.Caption:=      LoadResourceString(Lib, BUTTON_START);
+     Form1.Button2.Caption:=      LoadResourceString(Lib, BUTTON_BACK);
+     Form1.Button3.Caption:=      LoadResourceString(Lib, BUTTON_CONTINUE);
+     Form1.Button4.Caption:=      LoadResourceString(Lib, BUTTON_REGISTER);
+     Form1.Button5.Caption:=      LoadResourceString(Lib, BUTTON_BACK);
+     Form1.Button12.Caption:=     LoadResourceString(Lib, BUTTON_ADD);
+     Form1.Button13.Caption:=     LoadResourceString(Lib, BUTTON_DELETE);
+     Form1.Button22.Caption:=     LoadResourceString(Lib, BUTTON_CLOSE);
+     Form1.Button26.Caption:=     LoadResourceString(Lib, BUTTON_LOCK);
+     Form1.Button14.Caption:=     LoadResourceString(Lib, BUTTON_CHANGEPASSWORD);
+     Form1.Button15.Caption:=     LoadResourceString(Lib, BUTTON_DELETE);
+     Form1.Button17.Caption:=     LoadResourceString(Lib, BUTTON_LOGOUT);
+     Form1.Button16.Caption:=     LoadResourceString(Lib, BUTTON_CHANGESERVER);
+     Form1.Button18.Caption:=     LoadResourceString(Lib, BUTTON_CHANGEPASSWORD);
+     Form1.Button19.Caption:=     LoadResourceString(Lib, BUTTON_CANCEL);
+     Form1.Button20.Caption:=     LoadResourceString(Lib, BUTTON_DELETE);
+     Form1.Button21.Caption:=     LoadResourceString(Lib, BUTTON_CANCEL);
+     Form1.Button23.Caption:=     LoadResourceString(Lib, BUTTON_CHANGESERVER);
+     Form1.Button24.Caption:=     LoadResourceString(Lib, BUTTON_CANCEL);
+     Form1.Button25.Caption:=     LoadResourceString(Lib, BUTTON_BACK);
+
+     Unit2.buttonClose:=          LoadResourceString(Lib, BUTTON_CLOSE);
+
+     Form1.Button27.Caption:=     LoadResourceString(Lib, BUTTON_SERVER);
+     Form1.Button28.Caption:=     LoadResourceString(Lib, BUTTON_LANGUAGE);
+     Form1.Button29.Caption:=     LoadResourceString(Lib, BUTTON_MESSAGES);
+     Form1.Button30.Caption:=     LoadResourceString(Lib, BUTTON_BACK2);
+     Form1.Button31.Caption:=     LoadResourceString(Lib, BUTTON_APPLY);
+     Form1.Button32.Caption:=     LoadResourceString(Lib, BUTTON_CANCEL);
+     Form1.Button33.Caption:=     LoadResourceString(Lib, BUTTON_APPLY);
+     Form1.Button34.Caption:=     LoadResourceString(Lib, BUTTON_CANCEL);
 end;
 
-{ Form elements }
-
-procedure TForm1.FormCreate(Sender: TObject);
-var version: word;
-    aes:     TSynaAes;
+Procedure loadLocaleStrings(libName: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF});
+var libPath: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF};
     lib:     THandle;
-    {$IFDEF LCLWinCE}
-    libPath: widestring;
-    {$ELSE}
-    libPath: string;
-    {$ENDIF}
 begin
-     FormSize:=Form1.Height;
-     Form1.Caption:='Noter Client';
-     libPath:=UTF8ToAnsi(Application.Location+'test.dll');
+     libPath:=UTF8ToAnsi(Application.Location+'locales\'+libName);
      {$IFDEF LCLWinCE}
      lib:=LoadLibrary(PWideChar(libPath));
      {$ELSE}
@@ -1041,7 +1085,7 @@ begin
      {$ENDIF}
      If lib=0 then
      begin
-          Error('Library could not be loaded!'#13#10'Application finishes.');
+          Error(DEFAULT_NOLIBRARY);
           Application.Terminate;
      end
      else
@@ -1049,6 +1093,47 @@ begin
           LoadStringTable(lib);
           FreeLibrary(lib);
      end;
+end;
+
+Procedure updateNotesCount(count: longint = 0; selected: longint = 0);
+begin
+     Form1.Label64.Caption:=IntToStr(count);
+     If selected>0 then Form1.Label64.Caption:=IntToStr(selected)+'/'+Form1.Label64.Caption;
+end;
+
+Function getShortName(libName: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF}): utf8string;
+var libPath: {$IFDEF LCLWinCE}widestring{$ELSE}string{$ENDIF};
+    lib:     THandle;
+    tempEnName, tempName, tempVersion: utf8string;
+begin
+     libPath:=UTF8ToAnsi(Application.Location+'locales\'+libName);
+     {$IFDEF LCLWinCE}
+     lib:=LoadLibrary(PWideChar(libPath));
+     {$ELSE}
+     lib:=LoadLibrary(PChar(libPath));
+     {$ENDIF}
+     If lib=0 then
+     begin
+          Result:='?';
+     end
+     else
+     begin
+          tempEnName:= LoadResourceString(Lib, LIBINFO_EN_LANGNAME);
+          tempName:=   LoadResourceString(Lib, LIBINFO_LANGUAGE);
+          tempVersion:=LoadResourceString(Lib, LIBINFO_FORVERSION);
+          FreeLibrary(lib);
+          Result:=tempName+' ['+tempEnName+'], '+tempVersion;
+     end;
+end;
+
+{ Form elements }
+
+procedure TForm1.FormCreate(Sender: TObject);
+var version: word;
+    aes:     TSynaAes;
+begin
+     FormSize:=Form1.Height;
+     Form1.Caption:='Noter Client';
      {$IFDEF LCLWinCE}
      PrevWndProc:=Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
      {$ENDIF}
@@ -1073,6 +1158,7 @@ begin
      newIDSet:=false;
      iniFile:=Application.Location+'config.ini';
      ini:=TIniFile.Create(iniFile);
+     loadLocaleStrings(langLibName);
      If ini.SectionExists('server') then
      begin
           server:=ini.ReadString('server','address','');
@@ -1401,9 +1487,24 @@ begin
      end;
 end;
 
+procedure TForm1.Button27Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=7;
+end;
+
+procedure TForm1.Button28Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=13;
+end;
+
+procedure TForm1.Button29Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=14;
+end;
+
 procedure TForm1.Button10Click(Sender: TObject);
 begin
-     If userOrServerChanged() then Notebook1.PageIndex:=7;
+     If userOrServerChanged() then Notebook1.PageIndex:=12;
 end;
 
 procedure TForm1.Button11Click(Sender: TObject);
@@ -1651,6 +1752,31 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
      Notebook1.PageIndex:=0;
+end;
+
+procedure TForm1.Button30Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=12;
+end;
+
+procedure TForm1.Button31Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Button32Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=12;
+end;
+
+procedure TForm1.Button33Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Button34Click(Sender: TObject);
+begin
+     Notebook1.PageIndex:=12;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -2007,6 +2133,33 @@ begin
      Label58.Font.Style:=[fsBold];
 end;
 
+procedure TForm1.Label69Click(Sender: TObject);
+begin
+     Information(langLibInfo+#13#10#13#10+langLibAuthor+createdBy+#13#10+langLibDate+creationDate);
+end;
+
+procedure TForm1.Label69MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+     Label69.Font.Style:=[fsBold];
+end;
+
+procedure TForm1.Label69MouseEnter(Sender: TObject);
+begin
+     Label69.Font.Style:=[fsBold];
+end;
+
+procedure TForm1.Label69MouseLeave(Sender: TObject);
+begin
+     Label69.Font.Style:=[];
+end;
+
+procedure TForm1.Label69MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+     Label69.Font.Style:=[];
+end;
+
 procedure TForm1.ListBox1SelectionChange(Sender: TObject; User: boolean);
 var load: boolean;
     res:  integer;
@@ -2233,6 +2386,69 @@ begin
      Button25.Top:=Page12.Height-36;
 end;
 
+procedure TForm1.Page13BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+begin
+     Form1.Constraints.MinHeight:=96;
+     Label68.Caption:=server;
+     Label69.Caption:=langName;
+     Label70.Caption:=allQuestions;
+end;
+
+procedure TForm1.Page13Resize(Sender: TObject);
+begin
+     Label68.Width:=Page13.Width-96;
+     Label69.Width:=Page13.Width-96;
+     Label70.Width:=Page13.Width-96;
+end;
+
+procedure TForm1.Page14BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+var x: integer;
+    temp: utf8string;
+begin
+     Form1.Constraints.MinHeight:=96;
+     dllFilesList:=FindAllFiles(Application.Location+'locales','*.dll',false);
+     ListBox2.Clear;
+     For x:=0 to dllFilesList.Count-1 do
+     begin
+          temp:=ExtractFileName(dllFilesList[x]);
+          ListBox2.AddItem(getShortName(temp),nil);
+          If temp=langLibName then ListBox2.ItemIndex:=x;
+     end;
+     Label72.Caption:=IntToStr(dllFilesList.Count);
+end;
+
+procedure TForm1.Page14Resize(Sender: TObject);
+begin
+     ListBox2.Height:=Page14.Height-32;
+     ListBox2.Width:=Page14.Width;
+     Button31.Top:=Page14.Height-16;
+     Button32.Top:=Page14.Height-16;
+     Label72.Left:=Page14.Width-64;
+end;
+
+procedure TForm1.Page15BeforeShow(ASender: TObject; ANewPage: TPage;
+  ANewIndex: Integer);
+begin
+     Form1.Constraints.MinHeight:=96;
+     CheckListBox1.Checked[0]:=askUnsavedChanges;
+     CheckListBox1.Checked[1]:=askDeleteAccount;
+     CheckListBox1.Checked[2]:=askChangeCredentials;
+     CheckListBox1.Checked[3]:=askUpdateNote;
+     CheckListBox1.Checked[4]:=askDeleteNote;
+     CheckListBox1.Checked[5]:=askWantLogout;
+     CheckListBox1.ItemIndex:=-1;
+end;
+
+procedure TForm1.Page15Resize(Sender: TObject);
+begin
+     CheckListBox1.Width:=Page15.Width;
+     CheckListBox1.Height:=Page15.Height-32;
+     Button33.Top:=Page15.Height-16;
+     Button34.Top:=Page15.Height-16;
+end;
+
 procedure TForm1.Page1BeforeShow(ASender: TObject; ANewPage: TPage;
   ANewIndex: Integer);
 begin
@@ -2348,13 +2564,12 @@ begin
                  begin
                       ListBox1.AddItem(elements[x].name,nil);
                  end; }
-               Label64.Caption:=IntToStr(length(elements));
                ListBox1.ItemIndex:=selectedNoteIndex;
-               If selectedNoteIndex>=0 then Label64.Caption:=IntToStr(selectedNoteIndex+1)+'/'+Label64.Caption;
+               updateNotesCount(length(elements),selectedNoteIndex+1);
           end
           else
           begin
-               Label64.Caption:='0';
+               updateNotesCount();
                Error(whichCode(getError));
           end;
      end
@@ -2532,6 +2747,7 @@ end;
 
 procedure TForm1.PopupMenu1Popup(Sender: TObject);
 begin
+     updateNotesCount(length(elements),ListBox1.ItemIndex+1);
      MenuItem1.Enabled:=not (ListBox1.ItemIndex=-1);
      If MenuItem1.Enabled then
      begin
