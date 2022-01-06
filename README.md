@@ -12,7 +12,7 @@ Here is a list of projects pushed to this repository.
 
 ```
 JetDirect Send Message  [07-09.04.2021]
-Noter Client v1.0       [05.11.2021-04.01.2022]
+Noter Client v1.0       [05.11.2021-06.01.2022]
 ```
 
 ## Disclaimer
