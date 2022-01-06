@@ -3,6 +3,7 @@
 Noter Client v1.0 String Table
 Polish
 
+Library information:                 0xx
 Information:                         1xx
 Question:                            2xx
 Error:                               3xx
@@ -10,6 +11,13 @@ Label:                               4xx
 Button:                              5xx
 
 */
+
+// Library information section
+#define LIBINFO_EN_LANGNAME          001
+#define LIBINFO_LANGUAGE             002
+#define LIBINFO_FORVERSION           003
+#define LIBINFO_CREATEDBY            004
+#define LIBINFO_CREATIONDATE         005
 
 // Information section
 
@@ -121,6 +129,21 @@ Button:                              5xx
 #define LABEL_TERMSPART2             455
 #define LABEL_PRIVACYPOLICY          456
 #define LABEL_PRIVACYTEXT            457
+#define LABEL_NOQUESTIONS            458
+#define LABEL_SOMEQUESTIONS          459
+#define LABEL_ALLQUESTIONS           460
+#define LABEL_PROGRAMSETTINGS        461
+#define LABEL_AVAILABLELANGUAGES     462
+#define LABEL_DISPLAYEDQUESTIONS     463
+#define LABEL_ASKUNSAVEDCHANGES      464
+#define LABEL_ASKDELETEACCOUNT       465
+#define LABEL_ASKCHANGECREDENTIALS   466
+#define LABEL_ASKUPDATENOTE          467
+#define LABEL_ASKDELETENOTE          468
+#define LABEL_ASKWANTLOGOUT          469
+#define LABEL_LANGLIBINFO            470
+#define LABEL_LANGLIBAUTHOR          471
+#define LABEL_LANGLIBDATE            472
 
 // Button section
 
@@ -138,11 +161,22 @@ Button:                              5xx
 #define BUTTON_LOGOUT                512
 #define BUTTON_CHANGESERVER          513
 #define BUTTON_CANCEL                514
+#define BUTTON_SERVER                515
+#define BUTTON_LANGUAGE              516
+#define BUTTON_MESSAGES              517
+#define BUTTON_APPLY                 518
+#define BUTTON_BACK2                 519
 
 // Main section
 
 STRINGTABLE
 {
+    LIBINFO_EN_LANGNAME,             "Polish"
+    LIBINFO_LANGUAGE,                "Polski"
+    LIBINFO_FORVERSION,              "1.0.0.0"
+    LIBINFO_CREATEDBY,               "Bartłomiej \"Magnetic-Fox\" Węgrzyn"
+    LIBINFO_CREATIONDATE,            "06.01.2021"
+
     INFO_PREVIOUSSERVER,             "Poprzednie dane serwera zostały przywrócone"
     INFO_OK,                         "OK"
     INFO_USERCREATED,                "Pomyślnie utworzono użytkownika"
@@ -245,6 +279,21 @@ STRINGTABLE
     LABEL_TERMSPART2,                "5. Zwolnienie z odpowiedzialności\n\nAdministrator zastrzega sobie prawo do wyłączenia usługi w dowolnym momencie bez poinformowania użytkowników o takim zamiarze.\nUsługa oraz klient zostały dostarczone \"w takiej formie, w jakiej są\" i zostały, w miarę możliwości, dokładnie sprawdzone na okoliczność występowania w nich dowolnych błędów. Możliwe jest jednak, że pozostały w nich defekty, które w żaden sposób nie objawiły się podczas testów. Wykorzystując usługę oraz klienta do niej zgadzasz się na powyższe warunki, działając WYŁĄCZNIE na własną odpowiedzialność.\nRegulamin usługi może ulec zmianie bez uprzedniego poinformowania.\n\n6. Prawa autorskie\n\nAutorem usługi oraz klienta jest Bartłomiej \"Magnetic-Fox\" Węgrzyn.\nNiedozwolona jest jakakolwiek forma deasemblacji dowolnej części usługi ani klienta.\nWszelkie prawa zastrzeżone!\n\nRegulamin sporządzono 12 listopada 2021 roku."
     LABEL_PRIVACYPOLICY,             "Polityka prywatności"
     LABEL_PRIVACYTEXT,               "Jak większość usług, Noter zbiera pewne dane o użytkowniku. Są to jednak wyłącznie dane przetwarzane zgodnie z prawem, tj. nazwa klienta łączącego się z serwerem (tzw. user-agent) oraz adres IP (w tym adres Proxy).\nSą to jedyne dane, które mogą być wykorzystane w ramach tzw. \"konieczności\", tzn. wyłącznie jeśli wystąpi taka potrzeba, np. jeśli użytkownik będzie wykorzystywał usługę niezgodnie z jej przeznaczeniem i konieczne będzie odpowiednie postępowanie w jego kierunku.\nNa ten moment przechowywane na serwerze notatki nie są szyfrowane w sposób \"end-to-end\", to znaczy kluczem prywatnym przechowywanym wyłącznie przez użytkownika. Funkcjonalność ta jest jednak zaplanowana dla przyszłych wersji usługi. Oznacza to, że na ten moment odczytanie przechowywanych na serwerze notatek jest możliwe. Administrator zapewnia, że nie będzie uzyskiwać dostępu do tych danych, ponieważ nie jest to konieczne w celu zapewnienia poprawnego działania usługi.\nAdministrator postara się dołożyć wszelkich starań, aby przechowywane na serwerze dane pozostały bezpieczne - na ten moment przechowywane są one na zaszyfrowanym dysku serwera.\n\nWyłączenie odpowiedzialności\n\nJak w większości przypadków, tak i w przypadku tej usługi nie jest możliwe przewidzenie każdej możliwej sytuacji.\nAdministrator dołoży wszelkich starań, aby serwer pozostał bezpieczny. Nie może jednak przewidzieć działań przestępców mogących próbować włamać się na serwer.\nAdministrator NIE PONOSI ODPOWIEDZIALNOŚCI za szkodliwe działania osób trzecich mogących ujawnić prywatne dane - użytkownik wykorzystuje usługę WYŁĄCZNIE na własną odpowiedzialność.\n\nPolitykę prywatności sporządzono 12 listopada 2021 roku."
+    LABEL_NOQUESTIONS,               "Żadne"
+    LABEL_SOMEQUESTIONS,             "Wybrane"
+    LABEL_ALLQUESTIONS,              "Wszystkie"
+    LABEL_PROGRAMSETTINGS,           "Ustawienia programu"
+    LABEL_AVAILABLELANGUAGES,        "Dostępne pakiety językowe:"
+    LABEL_DISPLAYEDQUESTIONS,        "Wyświetlane pytania:"
+    LABEL_ASKUNSAVEDCHANGES,         "Porzucenie zmian"
+    LABEL_ASKDELETEACCOUNT,          "Usunięcie konta"
+    LABEL_ASKCHANGECREDENTIALS,      "Zmiana poświadczeń"
+    LABEL_ASKUPDATENOTE,             "Aktualizacja notatki"
+    LABEL_ASKDELETENOTE,             "Usunięcie notatki"
+    LABEL_ASKWANTLOGOUT,             "Potwierdzenie wylogowania"
+    LABEL_LANGLIBINFO,               "Informacje o pakiecie językowym"
+    LABEL_LANGLIBAUTHOR,             "Autor: "
+    LABEL_LANGLIBDATE,               "Data: "
 
     BUTTON_ADD,                      "Dodaj"
     BUTTON_UPDATE,                   "Zaktualizuj"
@@ -260,4 +309,9 @@ STRINGTABLE
     BUTTON_LOGOUT,                   "Wyloguj"
     BUTTON_CHANGESERVER,             "Zmień serwer"
     BUTTON_CANCEL,                   "Anuluj"
+    BUTTON_SERVER,                   "Serwer"
+    BUTTON_LANGUAGE,                 "Język"
+    BUTTON_MESSAGES,                 "Komunikaty"
+    BUTTON_APPLY,                    "Zastosuj"
+    BUTTON_BACK2,                    "Wróć"
 }
