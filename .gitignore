@@ -7,6 +7,12 @@
 *.res
 *.ppu
 
-#'lib' folders:
+#'lib' directories:
 
 JetDirect_SendMessage_CE/lib/*
+RSMPSU10/SimpleWakeUp/lib/*
+
+#'backup' directories:
+
+JetDirect_SendMessage_CE/backup/*
+RSMPSU10/SimpleWakeUp/backup/*
