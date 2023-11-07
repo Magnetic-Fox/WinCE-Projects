@@ -11,8 +11,10 @@ Some really simple projects done for Windows CE-based devices using Lazarus (Fre
 Here is a list of projects pushed to this repository.
 
 ```
-JetDirect Send Message  [07-09.04.2021]
-Noter Client v1.0       [05.11.2021-06.01.2022]
+JetDirect Send Message                          [07-09.04.2021]
+Really Simple Magic Packet Send Utility 1.0     [08.02.2023]
+
+Noter Client 1.0 has been moved to separate repository as it's no longer a simple project.
 ```
 
 ## Disclaimer
@@ -27,4 +29,4 @@ If you like to use any part of these codes in your software, just please give me
 In case you would like to make paid software and use parts of these codes - please, contact me before.
 
 *Bartłomiej "Magnetic-Fox" Węgrzyn,
-9th April, 2021*
+April 9, 2021 and November 7, 2023*
