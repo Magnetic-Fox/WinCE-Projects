@@ -1,6 +1,0 @@
-library project1;
-
-{$mode objfpc}{$H+}
-
-begin
-end.
